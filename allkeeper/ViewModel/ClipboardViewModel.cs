@@ -115,6 +115,7 @@ namespace allkeeper.ViewModel
                         o =>
                         {
                             ClipboardHistory = new ObservableCollection<string>();
+                            SearchResult = new ObservableCollection<string>();
                             RaisePropertyChanged("List");
                         });
                 return _ClearHistory;

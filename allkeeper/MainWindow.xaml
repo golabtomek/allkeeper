@@ -7,7 +7,8 @@
         xmlns:local="clr-namespace:allkeeper"
         xmlns:vm="clr-namespace:allkeeper.ViewModel"
         xmlns:tb="http://www.hardcodet.net/taskbar"
-        mc:Ignorable="d"
+                        xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        mc:Ignorable="d"
         Title="MainWindow" Height="{Binding height, Mode=TwoWay}" Width="{Binding width,Mode=TwoWay}"
         Top ="{Binding topProperty, Mode=TwoWay}"  Left="{Binding leftProperty, Mode=TwoWay}" WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False" 
         Topmost="True" Background="{Binding background}" Opacity="0.95" AllowsTransparency="True" 
@@ -129,9 +130,7 @@
             </Setter>
         </Style>
     </ClipboardMonitorWindow.Resources>
-
-
-<Grid>
+    <Grid>
         <Grid.Background>
             <SolidColorBrush Color="Black" Opacity="0.4"/>
         </Grid.Background>
@@ -156,7 +155,6 @@
             <Grid.Background>
                 <SolidColorBrush Color="Black" Opacity="0.1"/>
             </Grid.Background>
-             
             <ScrollViewer x:Name="listScrollViewer" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto" 
                            Margin="0,5,0,10" >
                 <ListBox BorderThickness="0" x:Name="ClipboardList" ItemsSource="{Binding List}" Background="Transparent" 
@@ -179,6 +177,7 @@
                             </Setter>
                             <Setter Property="Margin" Value="0,10,0,0"/>
                             <Setter Property="Width" Value="{Binding ElementName=ClipboardGrid, Path=ActualWidth}"/>
+                            <Setter Property="Height" Value="60"/>
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="ListBoxItem">
@@ -256,7 +255,8 @@
                         <DataTemplate>
                             <Grid ScrollViewer.HorizontalScrollBarVisibility="Disabled"  >
                                 <TextBlock Foreground="White" FontSize="14" Text="{Binding Mode=OneWay}" 
-                                           TextWrapping="Wrap" MaxHeight="55" FontFamily="Segoe UI" />
+                                           TextWrapping="Wrap" MaxHeight="55" VerticalAlignment="Center" HorizontalAlignment="Left" FontFamily="Segoe UI" />
+                               
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -272,7 +272,7 @@
                 </TextBox.Background>
             </TextBox>
         </Grid>
-        
+
 
         <tb:TaskbarIcon x:Name="TrayIcon" IconSource="Media/logo.ico" MenuActivation="All">
             <tb:TaskbarIcon.ContextMenu>
