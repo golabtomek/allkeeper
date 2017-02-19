@@ -1,0 +1,285 @@
+﻿<ClipboardMonitorWindow x:Name="Main" x:Class="allkeeper.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:local="clr-namespace:allkeeper"
+        xmlns:vm="clr-namespace:allkeeper.ViewModel"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="{Binding height, Mode=TwoWay}" Width="{Binding width,Mode=TwoWay}"
+        Top ="{Binding topProperty, Mode=TwoWay}"  Left="{Binding leftProperty, Mode=TwoWay}" WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False" 
+        Topmost="True" Background="{Binding background}" Opacity="0.95" AllowsTransparency="True" 
+        ClipboardUpdateCommand="{Binding ClipboardUpdateCommand}" >
+    <ClipboardMonitorWindow.DataContext>
+        <vm:MainViewModel/>
+    </ClipboardMonitorWindow.DataContext>
+    <ClipboardMonitorWindow.Triggers>
+        <EventTrigger RoutedEvent="MouseEnter">
+            <EventTrigger.Actions>
+                <BeginStoryboard>
+                    <Storyboard 
+                            x:Name="TopSlideDown"
+                            Storyboard.TargetName="Main">
+                        <DoubleAnimation
+                                BeginTime="0:0:0"
+                                Storyboard.TargetProperty="Top"
+                                From="{Binding ElementName=Main, Path=Top}" To="0" Duration="0:0:0.1" 
+                            />
+                    </Storyboard>
+                </BeginStoryboard>
+                <BeginStoryboard>
+                    <Storyboard x:Name="LeftSlideRight" Storyboard.TargetName="Main">
+                        <DoubleAnimation BeginTime="0:0:0" Storyboard.TargetProperty="Left"
+                                         From="{Binding ElementName=Main, Path=Left}" To="0" 
+                                         Duration="0:0:0.1" />
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger.Actions>
+        </EventTrigger>
+        <EventTrigger RoutedEvent="MouseLeave">
+            <EventTrigger.Actions>
+                <BeginStoryboard>
+                    <Storyboard 
+                            x:Name="TopSlideUp"
+                            Storyboard.TargetName="Main">
+                        <DoubleAnimation
+                                BeginTime="0:0:0"
+                                Storyboard.TargetProperty="Top" To="{Binding minTopProperty, Mode=TwoWay}" From="{Binding ElementName=Main, Path=Top}" 
+                                Duration="0:0:0.1" 
+                            />
+                    </Storyboard>
+                </BeginStoryboard>
+
+                <BeginStoryboard>
+                    <Storyboard x:Name="WidthCollapse" Storyboard.TargetName="Main">
+                        <DoubleAnimation BeginTime="0:0:0" Storyboard.TargetProperty="Left"
+                                         From="{Binding ElementName=Main, Path=Left}" To="{Binding minLeftProperty}" 
+                                         Duration="0:0:0.1"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger.Actions>
+        </EventTrigger>
+    </ClipboardMonitorWindow.Triggers>
+
+    <ClipboardMonitorWindow.Resources>
+        <Style
+        x:Key="ButtonFocusVisual">
+            <Setter
+            Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="MetroButton" TargetType="{x:Type Button}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="DarkGray"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="10 5"/>
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid>
+                            <Border
+                                x:Name="Border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}" />
+
+                            <ContentPresenter
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                Margin="{TemplateBinding Padding}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                RecognizesAccessKey="True" />
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="OpacityMask" Value="#AA888888"/>
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <SolidColorBrush Color="White" Opacity="0.2"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Margin" Value="2 1" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <SolidColorBrush Color="White" Opacity="0.1"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="#ADADAD"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </ClipboardMonitorWindow.Resources>
+
+
+<Grid>
+        <Grid.Background>
+            <SolidColorBrush Color="Black" Opacity="0.4"/>
+        </Grid.Background>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="ClipboardToolBar" Grid.Row="0">
+            <Grid.Background>
+                <SolidColorBrush Color="White" Opacity="0.1"/>
+            </Grid.Background>
+            <TextBlock Text="Clipboard History" FontSize="11" Foreground="White" Opacity="0.7" Margin="0,0,5,0" 
+                       HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            <Button Content="x" Style="{StaticResource MetroButton}" FontFamily="Webdings" FontSize="15" HorizontalAlignment="Left"
+                    Margin="5,0,0,0" VerticalAlignment="Center" Command="{Binding ClearHistory}" ToolTip="Clear history"/>
+        </Grid>
+        <Grid x:Name="ClipboardGrid" Grid.Column="0" Grid.Row="1">
+            <Grid.Background>
+                <SolidColorBrush Color="Black" Opacity="0.1"/>
+            </Grid.Background>
+             
+            <ScrollViewer x:Name="listScrollViewer" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto" 
+                           Margin="0,5,0,10" >
+                <ListBox BorderThickness="0" x:Name="ClipboardList" ItemsSource="{Binding List}" Background="Transparent" 
+                         SelectedItem="{Binding SelectedItem}" >
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel VerticalAlignment="Top"  Orientation="Vertical">
+                                <VirtualizingStackPanel.LayoutTransform>
+                                    <ScaleTransform ScaleX="1" ScaleY="-1" />
+                                </VirtualizingStackPanel.LayoutTransform>
+                            </VirtualizingStackPanel>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="LayoutTransform">
+                                <Setter.Value>
+                                    <ScaleTransform ScaleX="1" ScaleY="-1" />
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Margin" Value="0,10,0,0"/>
+                            <Setter Property="Width" Value="{Binding ElementName=ClipboardGrid, Path=ActualWidth}"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Border BorderThickness="{TemplateBinding Border.BorderThickness}"
+                                                Padding="{TemplateBinding Control.Padding}"
+                                                BorderBrush="{TemplateBinding Border.BorderBrush}"
+                                                Background="{TemplateBinding Panel.Background}"
+                                                Name="Bd"
+                                                SnapsToDevicePixels="True">
+                                            <ContentPresenter Content="{TemplateBinding ContentControl.Content}"
+                                                              ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
+                                                              ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
+                                                              HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                                                              VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
+                                                              SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                    <Condition Property="Selector.IsSelectionActive" Value="False"/>
+                                                    <Condition Property="Selector.IsSelected" Value="True"/>
+                                                </MultiTrigger.Conditions>
+                                                <Setter Property="Panel.Background" TargetName="Bd" 
+                                                        Value="Transparent"/>
+                                                <Setter Property="Border.BorderThickness" TargetName="Bd">
+                                                    <Setter.Value>
+                                                        <Thickness>0</Thickness>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </MultiTrigger>
+                                            <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                    <Condition Property="Selector.IsSelectionActive" Value="True"/>
+                                                    <Condition Property="Selector.IsSelected" Value="True"/>
+                                                </MultiTrigger.Conditions>
+                                                <Setter Property="Panel.Background" TargetName="Bd">
+                                                    <Setter.Value>
+                                                        <SolidColorBrush Color="Transparent" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter Property="Border.BorderThickness" TargetName="Bd">
+                                                    <Setter.Value>
+                                                        <Thickness>1</Thickness>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter Property="Border.BorderBrush" TargetName="Bd" Value="Transparent"/>
+                                            </MultiTrigger>
+                                            <Trigger Property="UIElement.IsMouseOver" Value="True">
+                                                <Setter Property="Panel.Background" TargetName="Bd">
+                                                    <Setter.Value>
+                                                        <SolidColorBrush Color="White" Opacity="0.2"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter Property="Border.BorderThickness" TargetName="Bd">
+                                                    <Setter.Value>
+                                                        <Thickness>1</Thickness>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter Property="Border.BorderBrush" TargetName="Bd" Value="Transparent"/>
+                                            </Trigger>
+                                            <Trigger Property="UIElement.IsEnabled" Value="False">
+                                                <Setter Property="TextElement.Foreground" TargetName="Bd">
+                                                    <Setter.Value>
+                                                        <DynamicResource ResourceKey="{x:Static SystemColors.GrayTextBrushKey}" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ScrollViewer.HorizontalScrollBarVisibility="Disabled"  >
+                                <TextBlock Foreground="White" FontSize="14" Text="{Binding Mode=OneWay}" 
+                                           TextWrapping="Wrap" MaxHeight="55" FontFamily="Segoe UI" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </ScrollViewer>
+            <Image x:Name="SearchIcon" Width="15" Height="15" VerticalAlignment="Bottom" HorizontalAlignment="Left" Source="Media/searchicon.png" Margin="10,10,5,15"/>
+            <TextBox x:Name="SearchBar" CaretBrush="White" VerticalAlignment="Bottom" Margin="30,10,10,10" Height="25" FontSize="15" 
+                     Foreground="LightGray" Text="{Binding SearchBarText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                     LostFocus="SearchBar_LostFocus" MouseLeftButtonDown="SearchBar_MouseLeftButtonDown" 
+                     HorizontalContentAlignment="Left" Padding="3,3,0,0" BorderThickness="0">
+                <TextBox.Background>
+                    <SolidColorBrush Color="White" Opacity="0.0"/>
+                </TextBox.Background>
+            </TextBox>
+        </Grid>
+        
+
+        <tb:TaskbarIcon x:Name="TrayIcon" IconSource="Media/logo.ico" MenuActivation="All">
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem x:Name="shutdownTray" Header="Exit" Click="shutdownTray_Click" />
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
+    </Grid>
+</ClipboardMonitorWindow>
