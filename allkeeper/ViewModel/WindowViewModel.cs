@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Practices.Prism.Commands;
 using System.Collections.ObjectModel;
@@ -12,12 +11,11 @@ namespace allkeeper.ViewModel
 #region constructor
         public MainViewModel()
         {
+            var desktopWorkingArea = System.Windows.SystemParameters.WorkArea;
             width = 1;
             height = 1;
-            minTopProperty = 1 - height;
-            topProperty = minTopProperty;
-            minLeftProperty = 1 - width;
-            leftProperty = minLeftProperty;
+            left = (int)desktopWorkingArea.Left;
+            top = (int)desktopWorkingArea.Top;
             SetColors();
             SystemParameters.StaticPropertyChanged += SystemParameters_StaticPropertyChanged;
             this.ClipboardUpdateCommand = new DelegateCommand(OnClipboardUpdate, OnCanClipboardUpdate);
@@ -26,33 +24,7 @@ namespace allkeeper.ViewModel
 
         #region windowProperties
 
-        public int minTopProperty { get; set; }
-
-        private int _topProperty;
-        public int topProperty
-        {
-            get { return _topProperty; }
-            set
-            {
-                if (value == _topProperty) return;
-                _topProperty = value;
-                RaisePropertyChanged("topProperty");
-            }
-        }
-
-        public int minLeftProperty { get; set; }
-
-        private int _leftProperty;
-        public int leftProperty
-        {
-            get { return _leftProperty; }
-            set
-            {
-                if (value == _leftProperty) return;
-                _leftProperty = value;
-                RaisePropertyChanged("leftProperty");
-            }
-        }
+        
 
         private int _height;
         public int height
@@ -78,6 +50,29 @@ namespace allkeeper.ViewModel
             }
         }
 
+        private int _top;
+        public int top
+        {
+            get { return _top; }
+            set
+            {
+                if (value == _top) return;
+                _top = value;
+                RaisePropertyChanged("top");
+            }
+        }
+
+        private int _left;
+        public int left
+        {
+            get { return _left; }
+            set
+            {
+                if (value == _left) return;
+                _left = value;
+                RaisePropertyChanged("left");
+            }
+        }
         
 
         #endregion

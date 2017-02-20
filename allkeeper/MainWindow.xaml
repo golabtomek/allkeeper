@@ -10,7 +10,7 @@
                         xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                         mc:Ignorable="d"
         Title="MainWindow" Height="{Binding height, Mode=TwoWay}" Width="{Binding width,Mode=TwoWay}"
-        Top ="0" Left="0" WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False" 
+        Top="{Binding top, Mode=TwoWay}" Left="{Binding left, Mode=TwoWay}" WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False" 
         Topmost="True" Background="{Binding background}" Opacity="0.95" AllowsTransparency="True" 
         ClipboardUpdateCommand="{Binding ClipboardUpdateCommand}" >
     <ClipboardMonitorWindow.DataContext>
@@ -20,7 +20,7 @@
         <EventTrigger RoutedEvent="MouseEnter">
             <EventTrigger.Actions>
                 <BeginStoryboard>
-                    <Storyboard 
+                    <Storyboard
                             x:Name="TopSlideDown"
                             Storyboard.TargetName="Main">
                         <DoubleAnimation
@@ -283,7 +283,6 @@
                 </TextBox.Background>
             </TextBox>
         </Grid>
-
 
 
         <tb:TaskbarIcon x:Name="TrayIcon" IconSource="Media/logo.ico" MenuActivation="All">
