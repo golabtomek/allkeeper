@@ -130,6 +130,7 @@
             </Setter>
         </Style>
     </ClipboardMonitorWindow.Resources>
+    
     <Grid>
         <Grid.Background>
             <SolidColorBrush Color="Black" Opacity="0.4"/>
@@ -142,7 +143,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid x:Name="ClipboardToolBar" Grid.Row="0">
+        <Grid x:Name="ClipboardToolBar" Grid.Row="0" Grid.Column="0">
             <Grid.Background>
                 <SolidColorBrush Color="White" Opacity="0.1"/>
             </Grid.Background>
@@ -253,10 +254,18 @@
                     </ListBox.ItemContainerStyle>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid ScrollViewer.HorizontalScrollBarVisibility="Disabled"  >
-                                <TextBlock Foreground="White" FontSize="14" Text="{Binding Mode=OneWay}" 
-                                           TextWrapping="Wrap" MaxHeight="55" VerticalAlignment="Center" HorizontalAlignment="Left" FontFamily="Segoe UI" />
-                               
+                            <Grid ScrollViewer.HorizontalScrollBarVisibility="Disabled" Width="{Binding ElementName=ClipboardGrid, Path=ActualWidth}">
+                                <TextBlock x:Name="Item" Foreground="White" FontSize="14" Text="{Binding Mode=OneWay}" 
+                                           TextWrapping="Wrap" MaxHeight="55" Margin="0,0,45,0" VerticalAlignment="Center" 
+                                           HorizontalAlignment="Left" FontFamily="Segoe UI" />
+                                <Button HorizontalAlignment="Right" Height="25" Margin="0,0,10,0"
+                                        Style="{StaticResource MetroButton}" ToolTip="Delete item"
+                                        Command="{Binding DataContext.DeleteHistoryItem, RelativeSource={RelativeSource AncestorType=ListBox}}" 
+                                        CommandParameter="{Binding}">
+                                    <Button.Content>
+                                        <Image Source="Media/trash_icon.png" Height="15" Width="15" Opacity="0.8"/>
+                                    </Button.Content>
+                                </Button>
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -272,6 +281,7 @@
                 </TextBox.Background>
             </TextBox>
         </Grid>
+
 
 
         <tb:TaskbarIcon x:Name="TrayIcon" IconSource="Media/logo.ico" MenuActivation="All">

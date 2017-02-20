@@ -1,11 +1,5 @@
 ﻿using Microsoft.Practices.Prism.Commands;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 
 namespace allkeeper.ViewModel
@@ -14,6 +8,7 @@ namespace allkeeper.ViewModel
     {
 
         #region ClipboardVM
+        private Model.ClipboardModel clipboardModel = new Model.ClipboardModel();
         private ObservableCollection<string> ClipboardHistory { get; set; } = new ObservableCollection<string>();
         private ObservableCollection<string> SearchResult { get; set; } = new ObservableCollection<string>();
 
@@ -26,7 +21,13 @@ namespace allkeeper.ViewModel
             }
         }
 
-
+        public void ModelSync()
+        {
+            ClipboardHistory = new ObservableCollection<string>(clipboardModel.HistoryList);
+            SearchResult = new ObservableCollection<string>(clipboardModel.SearchResult);
+            RaisePropertyChanged("List");
+        }
+        
         private string selectedItem;
         public string SelectedItem
         {
@@ -43,27 +44,17 @@ namespace allkeeper.ViewModel
 
         private void CopyToClipboard()
         {
-            Clipboard.SetText(SelectedItem);
+            clipboardModel.CopyToClipboard(SelectedItem);
         }
 
         #region clipboardupdate
         public DelegateCommand ClipboardUpdateCommand { get; private set; }
-
-        public bool CheckHistory(string text)
-        {
-            bool isTextAlreadyInHistory = false;
-            foreach (string t in ClipboardHistory)
-            {
-                if (text == t) isTextAlreadyInHistory = true;
-            }
-            return isTextAlreadyInHistory;
-        }
+        
 
         public void OnClipboardUpdate()
         {
-            string text = Clipboard.GetText();
-            if (text != null && text != "" && text != " " && CheckHistory(text) != true)
-                ClipboardHistory.Add(text);
+            clipboardModel.addItem();
+            ModelSync();
         }
 
 
@@ -91,14 +82,8 @@ namespace allkeeper.ViewModel
 
         public void Search()
         {
-            SearchResult = new ObservableCollection<string>();
-            foreach (string item in ClipboardHistory)
-            {
-                string item_downcase = item.ToLower();
-                if (item_downcase.Contains(SearchBarText.ToLower()))
-                    SearchResult.Add(item);
-            }
-            RaisePropertyChanged("List");
+            clipboardModel.Search(SearchBarText);
+            ModelSync();
         }
 
         #endregion
@@ -114,11 +99,30 @@ namespace allkeeper.ViewModel
                     _ClearHistory = new RelayCommand(
                         o =>
                         {
-                            ClipboardHistory = new ObservableCollection<string>();
+                            clipboardModel.ClearHistory();
                             SearchResult = new ObservableCollection<string>();
-                            RaisePropertyChanged("List");
+                            ModelSync();
                         });
                 return _ClearHistory;
+            }
+        }
+
+        private ICommand _DeleteHistoryItem;
+        public ICommand DeleteHistoryItem
+        {
+            get
+            {
+                if (_DeleteHistoryItem == null)
+                    _DeleteHistoryItem = new RelayCommand(
+                        o =>
+                        {
+                            string item = (string)o;
+                            clipboardModel.removeItem(item);
+                            if (SearchResult.Contains(item))
+                                SearchResult.Remove(item);
+                            ModelSync();
+                        });
+                return _DeleteHistoryItem;
             }
         }
 
