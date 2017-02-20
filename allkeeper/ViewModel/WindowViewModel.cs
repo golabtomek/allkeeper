@@ -12,8 +12,8 @@ namespace allkeeper.ViewModel
 #region constructor
         public MainViewModel()
         {
-            width = 450;
-            height = 450;
+            width = 1;
+            height = 1;
             minTopProperty = 1 - height;
             topProperty = minTopProperty;
             minLeftProperty = 1 - width;

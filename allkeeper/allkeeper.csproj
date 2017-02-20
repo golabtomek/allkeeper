@@ -25,7 +25,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>4</ApplicationRevision>
+    <ApplicationRevision>5</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -104,7 +104,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Model\Clipboard.cs" />
+    <Compile Include="Model\ClipboardModel.cs" />
+    <Compile Include="Model\NotesModel.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="ViewModel\ClipboardViewModel.cs" />
     <Compile Include="ViewModel\WindowViewModel.cs" />

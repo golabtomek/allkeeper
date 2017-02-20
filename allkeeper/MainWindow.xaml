@@ -10,7 +10,7 @@
                         xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                         mc:Ignorable="d"
         Title="MainWindow" Height="{Binding height, Mode=TwoWay}" Width="{Binding width,Mode=TwoWay}"
-        Top ="{Binding topProperty, Mode=TwoWay}"  Left="{Binding leftProperty, Mode=TwoWay}" WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False" 
+        Top ="0" Left="0" WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False" 
         Topmost="True" Background="{Binding background}" Opacity="0.95" AllowsTransparency="True" 
         ClipboardUpdateCommand="{Binding ClipboardUpdateCommand}" >
     <ClipboardMonitorWindow.DataContext>
@@ -25,15 +25,15 @@
                             Storyboard.TargetName="Main">
                         <DoubleAnimation
                                 BeginTime="0:0:0"
-                                Storyboard.TargetProperty="Top"
-                                From="{Binding ElementName=Main, Path=Top}" To="0" Duration="0:0:0.1" 
+                                Storyboard.TargetProperty="Height"
+                                From="{Binding ElementName=Main, Path=ActualHeight}" To="450" Duration="0:0:0.1" 
                             />
                     </Storyboard>
                 </BeginStoryboard>
                 <BeginStoryboard>
                     <Storyboard x:Name="LeftSlideRight" Storyboard.TargetName="Main">
-                        <DoubleAnimation BeginTime="0:0:0" Storyboard.TargetProperty="Left"
-                                         From="{Binding ElementName=Main, Path=Left}" To="0" 
+                        <DoubleAnimation BeginTime="0:0:0" Storyboard.TargetProperty="Width"
+                                         From="{Binding ElementName=Main, Path=ActualWidth}" To="450" 
                                          Duration="0:0:0.1" />
                     </Storyboard>
                 </BeginStoryboard>
@@ -47,7 +47,7 @@
                             Storyboard.TargetName="Main">
                         <DoubleAnimation
                                 BeginTime="0:0:0"
-                                Storyboard.TargetProperty="Top" To="{Binding minTopProperty, Mode=TwoWay}" From="{Binding ElementName=Main, Path=Top}" 
+                                Storyboard.TargetProperty="Height" To="1" From="{Binding ElementName=Main, Path=ActualHeight}" 
                                 Duration="0:0:0.1" 
                             />
                     </Storyboard>
@@ -55,8 +55,8 @@
 
                 <BeginStoryboard>
                     <Storyboard x:Name="WidthCollapse" Storyboard.TargetName="Main">
-                        <DoubleAnimation BeginTime="0:0:0" Storyboard.TargetProperty="Left"
-                                         From="{Binding ElementName=Main, Path=Left}" To="{Binding minLeftProperty}" 
+                        <DoubleAnimation BeginTime="0:0:0" Storyboard.TargetProperty="Width"
+                                         From="{Binding ElementName=Main, Path=ActualWidth}" To="1" 
                                          Duration="0:0:0.1"/>
                     </Storyboard>
                 </BeginStoryboard>
@@ -176,7 +176,7 @@
                                     <ScaleTransform ScaleX="1" ScaleY="-1" />
                                 </Setter.Value>
                             </Setter>
-                            <Setter Property="Margin" Value="0,10,0,0"/>
+                            <Setter Property="Margin" Value="0,0,0,0"/>
                             <Setter Property="Width" Value="{Binding ElementName=ClipboardGrid, Path=ActualWidth}"/>
                             <Setter Property="Height" Value="60"/>
                             <Setter Property="Template">
@@ -250,15 +250,17 @@
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
+                            
                         </Style>
                     </ListBox.ItemContainerStyle>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid ScrollViewer.HorizontalScrollBarVisibility="Disabled" Width="{Binding ElementName=ClipboardGrid, Path=ActualWidth}">
+                                
                                 <TextBlock x:Name="Item" Foreground="White" FontSize="14" Text="{Binding Mode=OneWay}" 
                                            TextWrapping="Wrap" MaxHeight="55" Margin="0,0,45,0" VerticalAlignment="Center" 
                                            HorizontalAlignment="Left" FontFamily="Segoe UI" />
-                                <Button HorizontalAlignment="Right" Height="25" Margin="0,0,10,0"
+                                <Button HorizontalAlignment="Right" Height="25" Margin="0,0,15,0"
                                         Style="{StaticResource MetroButton}" ToolTip="Delete item"
                                         Command="{Binding DataContext.DeleteHistoryItem, RelativeSource={RelativeSource AncestorType=ListBox}}" 
                                         CommandParameter="{Binding}">

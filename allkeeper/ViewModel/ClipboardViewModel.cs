@@ -21,7 +21,7 @@ namespace allkeeper.ViewModel
             }
         }
 
-        public void ModelSync()
+        public void ClipboardModelSync()
         {
             ClipboardHistory = new ObservableCollection<string>(clipboardModel.HistoryList);
             SearchResult = new ObservableCollection<string>(clipboardModel.SearchResult);
@@ -54,7 +54,7 @@ namespace allkeeper.ViewModel
         public void OnClipboardUpdate()
         {
             clipboardModel.addItem();
-            ModelSync();
+            ClipboardModelSync();
         }
 
 
@@ -83,7 +83,7 @@ namespace allkeeper.ViewModel
         public void Search()
         {
             clipboardModel.Search(SearchBarText);
-            ModelSync();
+            ClipboardModelSync();
         }
 
         #endregion
@@ -101,7 +101,7 @@ namespace allkeeper.ViewModel
                         {
                             clipboardModel.ClearHistory();
                             SearchResult = new ObservableCollection<string>();
-                            ModelSync();
+                            ClipboardModelSync();
                         });
                 return _ClearHistory;
             }
@@ -120,7 +120,7 @@ namespace allkeeper.ViewModel
                             clipboardModel.removeItem(item);
                             if (SearchResult.Contains(item))
                                 SearchResult.Remove(item);
-                            ModelSync();
+                            ClipboardModelSync();
                         });
                 return _DeleteHistoryItem;
             }
