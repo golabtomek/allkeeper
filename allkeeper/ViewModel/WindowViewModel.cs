@@ -3,12 +3,13 @@ using System.Windows;
 using System.Windows.Media;
 using Microsoft.Practices.Prism.Commands;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace allkeeper.ViewModel
 {
     public partial class MainViewModel : INotifyPropertyChanged
     {
-#region constructor
+        #region constructor
         public MainViewModel()
         {
             var desktopWorkingArea = System.Windows.SystemParameters.WorkArea;
@@ -18,14 +19,14 @@ namespace allkeeper.ViewModel
             top = (int)desktopWorkingArea.Top;
             SetColors();
             SystemParameters.StaticPropertyChanged += SystemParameters_StaticPropertyChanged;
+            SearchBarForeground = Brushes.LightGray;
+            searchBarText = "Search";
             this.ClipboardUpdateCommand = new DelegateCommand(OnClipboardUpdate, OnCanClipboardUpdate);
         }
         #endregion
 
         #region windowProperties
-
         
-
         private int _height;
         public int height
         {
@@ -77,8 +78,7 @@ namespace allkeeper.ViewModel
 
         #endregion
 
-
-        #region Colors
+        #region WindowColors
 
         private void SystemParameters_StaticPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -118,6 +118,9 @@ namespace allkeeper.ViewModel
             }
         }
         #endregion
+
+        #region Commands
+#endregion
 
         private void RaisePropertyChanged(string propertyName)
         {

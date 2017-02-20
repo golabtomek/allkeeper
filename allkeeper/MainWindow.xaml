@@ -275,15 +275,21 @@
             </ScrollViewer>
             <Image x:Name="SearchIcon" Width="15" Height="15" VerticalAlignment="Bottom" HorizontalAlignment="Left" Source="Media/searchicon.png" Margin="10,10,5,15"/>
             <TextBox x:Name="SearchBar" CaretBrush="White" VerticalAlignment="Bottom" Margin="30,10,10,10" Height="25" FontSize="15" 
-                     Foreground="LightGray" Text="{Binding SearchBarText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                     LostFocus="SearchBar_LostFocus" MouseLeftButtonDown="SearchBar_MouseLeftButtonDown" 
+                     Foreground="{Binding SearchBarForeground, Mode=TwoWay}" Text="{Binding SearchBarText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      HorizontalContentAlignment="Left" Padding="3,3,0,0" BorderThickness="0">
                 <TextBox.Background>
                     <SolidColorBrush Color="White" Opacity="0.0"/>
                 </TextBox.Background>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="GotFocus">
+                        <i:InvokeCommandAction Command="{Binding SearchBarLeftButtonDown}"/>
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="LostFocus">
+                        <i:InvokeCommandAction Command="{Binding SearchBarLostFocus}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
             </TextBox>
         </Grid>
-
 
         <tb:TaskbarIcon x:Name="TrayIcon" IconSource="Media/logo.ico" MenuActivation="All">
             <tb:TaskbarIcon.ContextMenu>

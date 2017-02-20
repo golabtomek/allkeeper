@@ -1,6 +1,7 @@
 ﻿using Microsoft.Practices.Prism.Commands;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace allkeeper.ViewModel
 {
@@ -63,7 +64,7 @@ namespace allkeeper.ViewModel
             return true;
         }
 
-        private string searchBarText = "Search";
+        private string searchBarText;
         public string SearchBarText
         {
             get { return searchBarText; }
@@ -80,6 +81,18 @@ namespace allkeeper.ViewModel
             }
         }
 
+        private Brush _SearchBarForeground;
+        public Brush SearchBarForeground
+        {
+            get { return _SearchBarForeground; }
+            set
+            {
+                if (_SearchBarForeground == value) return;
+                _SearchBarForeground = value;
+                RaisePropertyChanged("SearchBarForeground");
+            }
+        }
+
         public void Search()
         {
             clipboardModel.Search(SearchBarText);
@@ -89,6 +102,41 @@ namespace allkeeper.ViewModel
         #endregion
 
         #region Commands
+
+        private ICommand _SearchBarLeftButtonDown;
+        public ICommand SearchBarLeftButtonDown
+        {
+            get
+            {
+                if (_SearchBarLeftButtonDown == null)
+                    _SearchBarLeftButtonDown = new RelayCommand(
+                        o =>
+                        {
+                            SearchBarText = "";
+                            SearchBarForeground = Brushes.White;
+                        });
+                return _SearchBarLeftButtonDown;
+            }
+        }
+
+        private ICommand _SearchBarLostFocus;
+        public ICommand SearchBarLostFocus
+        {
+            get
+            {
+                if (_SearchBarLostFocus == null)
+                    _SearchBarLostFocus = new RelayCommand(
+                        o =>
+                        {
+                            if (SearchBarText == "")
+                            {
+                                SearchBarText = "Search";
+                                SearchBarForeground = Brushes.LightGray;
+                            }
+                        });
+                return _SearchBarLostFocus;
+            }
+        }
 
         private ICommand _ClearHistory;
         public ICommand ClearHistory
