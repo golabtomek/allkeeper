@@ -123,6 +123,41 @@ namespace allkeeper.ViewModel
         #endregion
 
         #region Commands
+        private ICommand _ShowApp;
+        public ICommand ShowApp
+        {
+            get
+            {
+                if(_ShowApp == null)
+                {
+                    _ShowApp = new RelayCommand(
+                        o =>
+                        {
+                            width = 800;
+                            height = 450;
+                        });
+                }
+                return _ShowApp;
+            }
+        }
+
+        private ICommand _HideApp;
+        public ICommand HideApp
+        {
+            get
+            {
+                if (_HideApp == null)
+                {
+                    _HideApp = new RelayCommand(
+                        o =>
+                        {
+                            width = 1;
+                            height = 1;
+                        });
+                }
+                return _HideApp;
+            }
+        }
 #endregion
 
         private void RaisePropertyChanged(string propertyName)

@@ -9,65 +9,23 @@
         xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         mc:Ignorable="d"
-        Title="MainWindow" Height="{Binding height, Mode=TwoWay}" Width="{Binding width,Mode=TwoWay}"
+        Title="MainWindow" Height="{Binding height, Mode=TwoWay}" Width="{Binding width, Mode=TwoWay}"
         Top="{Binding top, Mode=TwoWay}" Left="{Binding left, Mode=TwoWay}" WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False" 
         Topmost="True" Background="{Binding background}" Opacity="0.95" AllowsTransparency="True" 
         ClipboardUpdateCommand="{Binding ClipboardUpdateCommand}" >
     <ClipboardMonitorWindow.DataContext>
         <vm:MainViewModel/>
     </ClipboardMonitorWindow.DataContext>
-    <ClipboardMonitorWindow.Triggers>
-        <EventTrigger RoutedEvent="MouseEnter">
-            <EventTrigger.Actions>
-                <BeginStoryboard>
-                    <Storyboard
-                            x:Name="TopSlideDown"
-                            Storyboard.TargetName="Main">
-                        <DoubleAnimation
-                                BeginTime="0:0:0"
-                                Storyboard.TargetProperty="Height"
-                                From="{Binding ElementName=Main, Path=ActualHeight}" To="450" Duration="0:0:0.0" 
-                            />
-                    </Storyboard>
-                </BeginStoryboard>
-                <BeginStoryboard>
-                    <Storyboard x:Name="LeftSlideRight" Storyboard.TargetName="Main">
-                        <DoubleAnimation BeginTime="0:0:0" Storyboard.TargetProperty="Width"
-                                         From="{Binding ElementName=Main, Path=ActualWidth}" To="800" 
-                                         Duration="0:0:0.0" />
-                    </Storyboard>
-                </BeginStoryboard>
-            </EventTrigger.Actions>
-        </EventTrigger>
-        <EventTrigger RoutedEvent="MouseLeave">
-            <EventTrigger.Actions>
-                <BeginStoryboard>
-                    <Storyboard 
-                            x:Name="TopSlideUp"
-                            Storyboard.TargetName="Main">
-                        <DoubleAnimation
-                                BeginTime="0:0:0"
-                                Storyboard.TargetProperty="Height" To="1" From="{Binding ElementName=Main, Path=ActualHeight}" 
-                                Duration="0:0:0.0" 
-                            />
-                    </Storyboard>
-                </BeginStoryboard>
-
-                <BeginStoryboard>
-                    <Storyboard x:Name="WidthCollapse" Storyboard.TargetName="Main">
-                        <DoubleAnimation BeginTime="0:0:0" Storyboard.TargetProperty="Width"
-                                         From="{Binding ElementName=Main, Path=ActualWidth}" To="1" 
-                                         Duration="0:0:0.0"/>
-                    </Storyboard>
-                </BeginStoryboard>
-            </EventTrigger.Actions>
-        </EventTrigger>
-
-    </ClipboardMonitorWindow.Triggers>
     
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closed">
             <i:InvokeCommandAction Command="{Binding SaveData}" />
+        </i:EventTrigger>
+        <i:EventTrigger EventName="MouseEnter">
+            <i:InvokeCommandAction Command="{Binding ShowApp}" />
+        </i:EventTrigger>
+        <i:EventTrigger EventName="MouseLeave">
+            <i:InvokeCommandAction Command="{Binding HideApp}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
