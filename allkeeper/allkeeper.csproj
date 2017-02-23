@@ -107,6 +107,9 @@
     </ApplicationDefinition>
     <Compile Include="Model\ClipboardModel.cs" />
     <Compile Include="Model\NotesModel.cs" />
+    <Compile Include="Model\XmlFile.cs" />
+    <Compile Include="ViewModel\Converters.cs" />
+    <Compile Include="ViewModel\NotesViewModel.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
     <Compile Include="ViewModel\ClipboardViewModel.cs" />
     <Compile Include="ViewModel\WindowViewModel.cs" />
@@ -151,7 +154,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Media\edit_icon.png" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Media\searchicon.png" />
   </ItemGroup>
@@ -175,6 +180,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Media\trash_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Media\expand_icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

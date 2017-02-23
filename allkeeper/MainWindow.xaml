@@ -7,8 +7,8 @@
         xmlns:local="clr-namespace:allkeeper"
         xmlns:vm="clr-namespace:allkeeper.ViewModel"
         xmlns:tb="http://www.hardcodet.net/taskbar"
-                        xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                        mc:Ignorable="d"
+        xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        mc:Ignorable="d"
         Title="MainWindow" Height="{Binding height, Mode=TwoWay}" Width="{Binding width,Mode=TwoWay}"
         Top="{Binding top, Mode=TwoWay}" Left="{Binding left, Mode=TwoWay}" WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False" 
         Topmost="True" Background="{Binding background}" Opacity="0.95" AllowsTransparency="True" 
@@ -26,15 +26,15 @@
                         <DoubleAnimation
                                 BeginTime="0:0:0"
                                 Storyboard.TargetProperty="Height"
-                                From="{Binding ElementName=Main, Path=ActualHeight}" To="450" Duration="0:0:0.1" 
+                                From="{Binding ElementName=Main, Path=ActualHeight}" To="450" Duration="0:0:0.0" 
                             />
                     </Storyboard>
                 </BeginStoryboard>
                 <BeginStoryboard>
                     <Storyboard x:Name="LeftSlideRight" Storyboard.TargetName="Main">
                         <DoubleAnimation BeginTime="0:0:0" Storyboard.TargetProperty="Width"
-                                         From="{Binding ElementName=Main, Path=ActualWidth}" To="450" 
-                                         Duration="0:0:0.1" />
+                                         From="{Binding ElementName=Main, Path=ActualWidth}" To="800" 
+                                         Duration="0:0:0.0" />
                     </Storyboard>
                 </BeginStoryboard>
             </EventTrigger.Actions>
@@ -48,7 +48,7 @@
                         <DoubleAnimation
                                 BeginTime="0:0:0"
                                 Storyboard.TargetProperty="Height" To="1" From="{Binding ElementName=Main, Path=ActualHeight}" 
-                                Duration="0:0:0.1" 
+                                Duration="0:0:0.0" 
                             />
                     </Storyboard>
                 </BeginStoryboard>
@@ -57,16 +57,22 @@
                     <Storyboard x:Name="WidthCollapse" Storyboard.TargetName="Main">
                         <DoubleAnimation BeginTime="0:0:0" Storyboard.TargetProperty="Width"
                                          From="{Binding ElementName=Main, Path=ActualWidth}" To="1" 
-                                         Duration="0:0:0.1"/>
+                                         Duration="0:0:0.0"/>
                     </Storyboard>
                 </BeginStoryboard>
             </EventTrigger.Actions>
         </EventTrigger>
-    </ClipboardMonitorWindow.Triggers>
 
-    <ClipboardMonitorWindow.Resources>
-        <Style
-        x:Key="ButtonFocusVisual">
+    </ClipboardMonitorWindow.Triggers>
+    
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closed">
+            <i:InvokeCommandAction Command="{Binding SaveData}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+    <Window.Resources>
+        <Style x:Key="ButtonFocusVisual">
             <Setter
             Property="Control.Template">
                 <Setter.Value>
@@ -76,7 +82,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
         <Style x:Key="MetroButton" TargetType="{x:Type Button}">
             <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
             <Setter Property="Background" Value="Transparent"/>
@@ -129,13 +134,14 @@
                 </Setter.Value>
             </Setter>
         </Style>
-    </ClipboardMonitorWindow.Resources>
-    
+    </Window.Resources>
+
     <Grid>
         <Grid.Background>
             <SolidColorBrush Color="Black" Opacity="0.4"/>
         </Grid.Background>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -156,9 +162,10 @@
             <Grid.Background>
                 <SolidColorBrush Color="Black" Opacity="0.1"/>
             </Grid.Background>
+
             <ScrollViewer x:Name="listScrollViewer" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto" 
-                           Margin="0,5,0,10" >
-                <ListBox BorderThickness="0" x:Name="ClipboardList" ItemsSource="{Binding List}" Background="Transparent" 
+                           Margin="0,5,0,40" >
+                <ListBox BorderThickness="0" x:Name="ClipboardList" ItemsSource="{Binding ClipList}" Background="Transparent" 
                          SelectedItem="{Binding SelectedItem}" >
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -178,7 +185,7 @@
                             </Setter>
                             <Setter Property="Margin" Value="0,0,0,0"/>
                             <Setter Property="Width" Value="{Binding ElementName=ClipboardGrid, Path=ActualWidth}"/>
-                            <Setter Property="Height" Value="60"/>
+                            <Setter Property="Height" Value="80"/>
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="ListBoxItem">
@@ -256,9 +263,8 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid ScrollViewer.HorizontalScrollBarVisibility="Disabled" Width="{Binding ElementName=ClipboardGrid, Path=ActualWidth}">
-                                
-                                <TextBlock x:Name="Item" Foreground="White" FontSize="14" Text="{Binding Mode=OneWay}" 
-                                           TextWrapping="Wrap" MaxHeight="55" Margin="0,0,45,0" VerticalAlignment="Center" 
+                                <TextBlock x:Name="Item" Foreground="White" FontSize="13" Text="{Binding Mode=OneWay}" 
+                                           TextWrapping="Wrap" MaxHeight="70" Margin="0,10,45,10" VerticalAlignment="Top" 
                                            HorizontalAlignment="Left" FontFamily="Segoe UI" />
                                 <Button HorizontalAlignment="Right" Height="25" Margin="0,0,15,0"
                                         Style="{StaticResource MetroButton}" ToolTip="Delete item"
@@ -291,6 +297,246 @@
             </TextBox>
         </Grid>
 
+        <Grid x:Name="NotesTaskBar" Grid.Column="1" Grid.Row="0">
+            <Grid.Background>
+                <SolidColorBrush Color="White" Opacity="0.1"/>
+            </Grid.Background>
+            <TextBlock Text="Quick Notes" FontSize="11" Foreground="White" Opacity="0.7" Margin="0,0,5,0" 
+                       HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            <Button Content="+" Command="{Binding AddNote}" Style="{StaticResource MetroButton}" FontFamily="Calibri" FontSize="15" HorizontalAlignment="Left"
+                    Margin="5,0,0,0" VerticalAlignment="Center" ToolTip="Add Note"/>
+            <Rectangle Width="1" Fill="White" Opacity="0.3" HorizontalAlignment="Left"/>
+        </Grid>
+        <Grid x:Name="NotesGrid" Grid.Column="1" Grid.Row="1">
+            <Grid x:Name="AddNoteGrid" Visibility="{Binding AddNoteGridVisibility,Mode=TwoWay}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="40" />
+                </Grid.RowDefinitions>
+                <TextBox x:Name="TextBoxAddNoteTitle" VerticalContentAlignment="Center" MaxLength="50" FontSize="14" Height="30" Margin="0,0,0,0" VerticalAlignment="Top"
+                         HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Foreground="White" CaretBrush="White" BorderThickness="0" 
+                         Text="{Binding NoteTitleTextBox, Mode=TwoWay}">
+                    <TextBox.Background>
+                        <SolidColorBrush Color="White" Opacity="0.1"/>
+                    </TextBox.Background>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="GotFocus">
+                            <i:InvokeCommandAction Command="{Binding NoteTitleLeftButtonDown}"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="LostFocus">
+                            <i:InvokeCommandAction Command="{Binding NoteTitleLostFocus}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBox>
+                <TextBox x:Name="TextBoxAddNote" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" AcceptsTab="True" Background="Transparent" Foreground="{Binding NoteTextBoxForeground, Mode=TwoWay}" 
+                     Text="{Binding NoteTextBoxText, Mode=TwoWay}" CaretBrush="White" FontSize="13" Margin="10,40,10,0" 
+                         BorderThickness="0" Grid.Row="0" VerticalAlignment="Top">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="GotFocus">
+                            <i:InvokeCommandAction Command="{Binding AddTextTextBoxLeftButtonDown}"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="LostFocus">
+                            <i:InvokeCommandAction Command="{Binding AddTextTextBoxLostFocus}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBox>
+                <Grid Grid.Row="1" HorizontalAlignment="Stretch">
+                    <Grid.Background>
+                        <SolidColorBrush Color="White" Opacity="0.1"/>
+                    </Grid.Background>
+                    <Button Content="Save" Command="{Binding SaveNewNote}" Foreground="White" 
+                            Style="{StaticResource MetroButton}" HorizontalAlignment="Left" Margin="5,0,0,0"/>
+                    <Button Content="Cancel" Command="{Binding CancelAddNote}" Foreground="White" 
+                            Style="{StaticResource MetroButton}" HorizontalAlignment="Right" Margin ="0,0,5,0" 
+                        />
+                </Grid>
+            </Grid>
+            <Grid x:Name="NotesListGrid" Visibility="{Binding NoteListGridVisibility,Mode=TwoWay}">
+                <ScrollViewer x:Name="NotesScrollViewer" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto" 
+                           Margin="0,0,0,5" >
+                    <ListBox BorderThickness="0" x:Name="NotesList" ItemsSource="{Binding Path=NotesList}" Background="Transparent" 
+                         >
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel VerticalAlignment="Top"  Orientation="Vertical">
+                                    <VirtualizingStackPanel.LayoutTransform>
+                                        <ScaleTransform ScaleX="1" ScaleY="-1" />
+                                    </VirtualizingStackPanel.LayoutTransform>
+                                </VirtualizingStackPanel>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="LayoutTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="1" ScaleY="-1" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Margin" Value="0,0,0,-1"/>
+                                <Setter Property="Width" Value="{Binding ElementName=NotesGrid, Path=ActualWidth}"/>
+                                <Setter Property="MinHeight" Value="60"/>
+                                <Setter Property="MaxHeight" Value="140"/>
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <SolidColorBrush Color="White" Opacity="0.1"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Focusable" Value="False"/>
+
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
+                                            <Border BorderThickness="{TemplateBinding Border.BorderThickness}"
+                                                Padding="{TemplateBinding Control.Padding}"
+                                                BorderBrush="{TemplateBinding Border.BorderBrush}"
+                                                Background="{TemplateBinding Panel.Background}"
+                                                Name="Bd"
+                                                SnapsToDevicePixels="True">
+                                                <ContentPresenter Content="{TemplateBinding ContentControl.Content}"
+                                                              ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
+                                                              ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
+                                                              HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                                                              VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
+                                                              SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <MultiTrigger>
+                                                    <MultiTrigger.Conditions>
+                                                        <Condition Property="Selector.IsSelectionActive" Value="False"/>
+                                                        <Condition Property="Selector.IsSelected" Value="True"/>
+                                                    </MultiTrigger.Conditions>
+                                                    <Setter Property="Panel.Background" TargetName="Bd" 
+                                                        Value="Transparent"/>
+                                                    <Setter Property="Border.BorderThickness" TargetName="Bd">
+                                                        <Setter.Value>
+                                                            <Thickness>0</Thickness>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </MultiTrigger>
+                                                <MultiTrigger>
+                                                    <MultiTrigger.Conditions>
+                                                        <Condition Property="Selector.IsSelectionActive" Value="True"/>
+                                                        <Condition Property="Selector.IsSelected" Value="True"/>
+                                                    </MultiTrigger.Conditions>
+                                                    <Setter Property="Panel.Background" TargetName="Bd">
+                                                        <Setter.Value>
+                                                            <SolidColorBrush Color="Transparent" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Setter Property="Border.BorderThickness" TargetName="Bd">
+                                                        <Setter.Value>
+                                                            <Thickness>1</Thickness>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Setter Property="Border.BorderBrush" TargetName="Bd" Value="Transparent"/>
+                                                </MultiTrigger>
+                                                <Trigger Property="UIElement.IsMouseOver" Value="True">
+                                                    <Setter Property="Panel.Background" TargetName="Bd">
+                                                        <Setter.Value>
+                                                            <SolidColorBrush Color="White" Opacity="0.2"/>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Setter Property="Border.BorderThickness" TargetName="Bd">
+                                                        <Setter.Value>
+                                                            <Thickness>1</Thickness>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Setter Property="Border.BorderBrush" TargetName="Bd" Value="Transparent"/>
+                                                </Trigger>
+                                                <Trigger Property="UIElement.IsEnabled" Value="False">
+                                                    <Setter Property="TextElement.Foreground" TargetName="Bd">
+                                                        <Setter.Value>
+                                                            <DynamicResource ResourceKey="{x:Static SystemColors.GrayTextBrushKey}" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ScrollViewer.HorizontalScrollBarVisibility="Disabled" Width="{Binding ElementName=NotesGrid, Path=ActualWidth}">
+                                  
+                                    <TextBlock x:Name="NoteTitle" Text="{Binding Title, Mode=OneWay}" FontSize="11" Foreground="LightGray" VerticalAlignment="Top" 
+                                               HorizontalAlignment="Left" Margin="10,5,0,0"/>
+                                    <TextBlock x:Name="NoteContent" Foreground="White" FontSize="13" Text="{Binding Content, Mode=OneWay}" 
+                                           TextWrapping="Wrap" MaxHeight="115" Margin="5,20,85,0" VerticalAlignment="Center" 
+                                           HorizontalAlignment="Left" FontFamily="Segoe UI" />
+                                            <Button HorizontalAlignment="Right" Width="35" Height="25" Margin="0,0,15,0"
+                                        Style="{StaticResource MetroButton}" ToolTip="Delete item"
+                                        Command="{Binding DataContext.DeleteNote, RelativeSource={RelativeSource AncestorType=ListBox}}" 
+                                        CommandParameter="{Binding }">
+                                                <Button.Content>
+                                                    <Image Source="Media/trash_icon.png" Height="15" Width="15" Opacity="0.8"/>
+                                                </Button.Content>
+
+                                            </Button>
+                                    <Button HorizontalAlignment="Right" Width="35" Height="25" Margin="0,0,50,0"
+                                        Style="{StaticResource MetroButton}" ToolTip="Edit item"
+                                        Command="{Binding DataContext.EditNote, RelativeSource={RelativeSource AncestorType=ListBox}}" 
+                                        CommandParameter="{Binding }">
+                                        <Button.Content>
+                                            <Image Source="Media/expand_icon.png" Height="15" Width="15" Opacity="0.8"/>
+                                        </Button.Content>
+                                    </Button>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+
+                    </ListBox>
+                </ScrollViewer>
+            </Grid>
+
+            <Grid x:Name="EditNoteGrid" Visibility="{Binding NoteEditGridVisibility,Mode=TwoWay}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="40" />
+                </Grid.RowDefinitions>
+                <TextBox VerticalContentAlignment="Center"  x:Name="TextBoxEditNoteTitle" MaxLength="50" FontSize="14" Height="30" Margin="0,0,0,0" VerticalAlignment="Top"
+                         HorizontalAlignment="Stretch" Foreground="White" CaretBrush="White" BorderThickness="0" HorizontalContentAlignment="Center"
+                         Text="{Binding EditNoteTitleTextBox, Mode=TwoWay}">
+                    <TextBox.Background>
+                        <SolidColorBrush Color="White" Opacity="0.1"/>
+                    </TextBox.Background>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="GotFocus">
+                            <i:InvokeCommandAction Command="{Binding NoteTitleLeftButtonDown}"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="LostFocus">
+                            <i:InvokeCommandAction Command="{Binding NoteTitleLostFocus}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBox>
+                <TextBox x:Name="TextBoxEditNote" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" Background="Transparent" Foreground="{Binding NoteTextBoxForeground, Mode=TwoWay}" 
+                     Text="{Binding EditNoteTextBoxText, Mode=TwoWay}" CaretBrush="White" FontSize="13" Margin="10,40,10,0" 
+                         BorderThickness="0" Grid.Row="0" VerticalAlignment="Top">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="GotFocus">
+                            <i:InvokeCommandAction Command="{Binding AddTextTextBoxLeftButtonDown}"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="LostFocus">
+                            <i:InvokeCommandAction Command="{Binding AddTextTextBoxLostFocus}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBox>
+                <Grid Grid.Row="1" HorizontalAlignment="Stretch">
+                    <Grid.Background>
+                        <SolidColorBrush Color="White" Opacity="0.1"/>
+                    </Grid.Background>
+                    <Button Content="Save" Command="{Binding SaveEditNote}" Foreground="White" 
+                                Style="{StaticResource MetroButton}" HorizontalAlignment="Left" Margin="5,0,0,0">
+                        </Button>
+                    <Button Content="Cancel" Command="{Binding CancelAddNote}" Foreground="White" 
+                                Style="{StaticResource MetroButton}" HorizontalAlignment="Right" Margin="0,0,5,0"
+                        />
+                </Grid>
+            </Grid>
+
+        </Grid>
         <tb:TaskbarIcon x:Name="TrayIcon" IconSource="Media/logo.ico" MenuActivation="All">
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>

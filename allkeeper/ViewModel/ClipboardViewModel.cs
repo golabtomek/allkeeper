@@ -9,11 +9,18 @@ namespace allkeeper.ViewModel
     {
 
         #region ClipboardVM
+        private void ClipboardConstructor()
+        {
+            SearchBarForeground = Brushes.LightGray;
+            searchBarText = "Search";
+            this.ClipboardUpdateCommand = new DelegateCommand(OnClipboardUpdate, OnCanClipboardUpdate);
+        }
+
         private Model.ClipboardModel clipboardModel = new Model.ClipboardModel();
         private ObservableCollection<string> ClipboardHistory { get; set; } = new ObservableCollection<string>();
         private ObservableCollection<string> SearchResult { get; set; } = new ObservableCollection<string>();
 
-        public ObservableCollection<string> List
+        public ObservableCollection<string> ClipList
         {
             get
             {
@@ -26,7 +33,7 @@ namespace allkeeper.ViewModel
         {
             ClipboardHistory = new ObservableCollection<string>(clipboardModel.HistoryList);
             SearchResult = new ObservableCollection<string>(clipboardModel.SearchResult);
-            RaisePropertyChanged("List");
+            RaisePropertyChanged("ClipList");
         }
         
         private string selectedItem;
@@ -112,6 +119,7 @@ namespace allkeeper.ViewModel
                     _SearchBarLeftButtonDown = new RelayCommand(
                         o =>
                         {
+                            if(SearchBarText=="Search")
                             SearchBarText = "";
                             SearchBarForeground = Brushes.White;
                         });
@@ -135,6 +143,7 @@ namespace allkeeper.ViewModel
                             }
                         });
                 return _SearchBarLostFocus;
+                
             }
         }
 

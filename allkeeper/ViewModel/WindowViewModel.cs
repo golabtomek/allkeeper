@@ -12,6 +12,15 @@ namespace allkeeper.ViewModel
         #region constructor
         public MainViewModel()
         {
+            ClipboardConstructor();
+            windowConstructor();
+            NotesConstructor();
+        }
+        #endregion
+
+        #region windowViewModel
+        private void windowConstructor()
+        {
             var desktopWorkingArea = System.Windows.SystemParameters.WorkArea;
             width = 1;
             height = 1;
@@ -19,14 +28,8 @@ namespace allkeeper.ViewModel
             top = (int)desktopWorkingArea.Top;
             SetColors();
             SystemParameters.StaticPropertyChanged += SystemParameters_StaticPropertyChanged;
-            SearchBarForeground = Brushes.LightGray;
-            searchBarText = "Search";
-            this.ClipboardUpdateCommand = new DelegateCommand(OnClipboardUpdate, OnCanClipboardUpdate);
         }
-        #endregion
 
-        #region windowProperties
-        
         private int _height;
         public int height
         {
