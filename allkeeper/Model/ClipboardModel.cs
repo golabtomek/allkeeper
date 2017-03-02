@@ -5,8 +5,15 @@ namespace allkeeper.Model
 {
     public class ClipboardModel
     {
-        public List<string> HistoryList = new List<string>();
-        public List<string> SearchResult = new List<string>();
+        private List<string> HistoryList = new List<string>();
+        private List<string> SearchResult = new List<string>();
+        private string searchText = "";
+
+        public List<string> get()
+        {
+            if (searchText == "" || searchText == "Search") return HistoryList;
+            else return SearchResult;
+        }
 
         public void addItem()
         {
@@ -37,7 +44,7 @@ namespace allkeeper.Model
             Clipboard.SetText(text);
         }
 
-        public void ClearHistory()
+        public void Clear()
         {
             HistoryList = new List<string>();
             SearchResult = new List<string>();
@@ -47,11 +54,15 @@ namespace allkeeper.Model
         public void Search(string text)
         {
             SearchResult = new List<string>();
-            foreach (string item in HistoryList)
+            searchText = text;
+            if (text != "" || text != "Search")
             {
-                string item_downcase = item.ToLower();
-                if (item_downcase.Contains(text.ToLower()))
-                    SearchResult.Add(item);
+                foreach (string item in HistoryList)
+                {
+                    string item_downcase = item.ToLower();
+                    if (item_downcase.Contains(text.ToLower()))
+                        SearchResult.Add(item);
+                }
             }
         }
     }

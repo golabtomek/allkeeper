@@ -4,34 +4,90 @@ using System.Windows.Media;
 using Microsoft.Practices.Prism.Commands;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace allkeeper.ViewModel
 {
+    enum WindowPosition { up, down }
+
     public partial class MainViewModel : INotifyPropertyChanged
     {
         #region constructor
         public MainViewModel()
         {
+            WindowConstructor();
             ClipboardConstructor();
-            windowConstructor();
             NotesConstructor();
         }
         #endregion
 
         #region windowViewModel
-        private void windowConstructor()
+        private void WindowConstructor()
         {
-            var desktopWorkingArea = System.Windows.SystemParameters.WorkArea;
-            width = 1;
-            height = 1;
-            left = (int)desktopWorkingArea.Left;
-            top = (int)desktopWorkingArea.Top;
+            loadWindowPosition();
+            setWindowDimensions();
+            setWindowPosition();
             SetColors();
             SystemParameters.StaticPropertyChanged += SystemParameters_StaticPropertyChanged;
         }
+        
+        #region WindowProperties
+        private double fullWidth = 900;
+        private double currentWidth;
 
-        private int _height;
-        public int height
+        private WindowPosition windowPosition;
+        
+        public void saveWindowPosition()
+        {
+            if (windowPosition == WindowPosition.up) Model.XmlFile.saveWindowSettings("up");
+            if (windowPosition == WindowPosition.down) Model.XmlFile.saveWindowSettings("down");
+        }
+
+        public void loadWindowPosition()
+        {
+            string position = Model.XmlFile.loadWindowSettings();
+            if (position == "up") windowPosition = WindowPosition.up;
+            else if (position == "down") windowPosition = WindowPosition.down;
+            else windowPosition = WindowPosition.up;
+        }
+
+        private void setWindowDimensions()
+        {
+            width = 1;
+            height = 1;
+            currentWidth = fullWidth;
+            
+        }
+
+        private void setWindowPosition()
+        {
+            var desktopWorkingArea = SystemParameters.WorkArea;
+            switch (windowPosition)
+            {
+                case WindowPosition.down:
+                    {
+                        left = (int)desktopWorkingArea.Left;
+                        top = (int)desktopWorkingArea.Bottom - 1;
+                        break;
+                    }
+                case WindowPosition.up:
+                    {
+                        left = (int)desktopWorkingArea.Left;
+                        top = (int)desktopWorkingArea.Top;
+                        break;
+                    }
+                default:
+                    {
+                        left = (int)desktopWorkingArea.Left;
+                        top = (int)desktopWorkingArea.Top;
+                        break;
+                    }
+            }
+        }
+
+        private double _height;
+        public double height
         {
             get { return _height; }
             set
@@ -42,8 +98,8 @@ namespace allkeeper.ViewModel
             }
         }
 
-        private int _width;
-        public int width
+        private double _width;
+        public double width
         {
             get { return _width; }
             set
@@ -54,8 +110,21 @@ namespace allkeeper.ViewModel
             }
         }
 
-        private int _top;
-        public int top
+
+        private int _gridHeight;
+        public int gridHeight
+        {
+            get { return _gridHeight; }
+            set
+            {
+                if (value == _gridHeight) return;
+                _gridHeight = value;
+                RaisePropertyChanged("gridHeight");
+            }
+        }
+
+        private double _top;
+        public double top
         {
             get { return _top; }
             set
@@ -66,8 +135,8 @@ namespace allkeeper.ViewModel
             }
         }
 
-        private int _left;
-        public int left
+        private double _left;
+        public double left
         {
             get { return _left; }
             set
@@ -78,6 +147,7 @@ namespace allkeeper.ViewModel
             }
         }
         
+        #endregion
 
         #endregion
 
@@ -133,8 +203,15 @@ namespace allkeeper.ViewModel
                     _ShowApp = new RelayCommand(
                         o =>
                         {
-                            width = 800;
+                            var desktopWorkingArea = SystemParameters.WorkArea;
                             height = 450;
+                            gridHeight = 450;
+                            if (windowPosition == WindowPosition.down)
+                            {
+                                top = desktopWorkingArea.Bottom - height;
+                            }
+                            else top = desktopWorkingArea.Top;
+                            width = currentWidth;
                         });
                 }
                 return _ShowApp;
@@ -151,14 +228,77 @@ namespace allkeeper.ViewModel
                     _HideApp = new RelayCommand(
                         o =>
                         {
+                            var desktopWorkingArea = SystemParameters.WorkArea;
+                            currentWidth = width;
                             width = 1;
                             height = 1;
+                            gridHeight = 1;
+                            if (windowPosition == WindowPosition.down)
+                            {
+                                top = desktopWorkingArea.Bottom - 1;
+                            }
+                            else top = desktopWorkingArea.Top;
                         });
                 }
                 return _HideApp;
             }
         }
-#endregion
+
+        private ICommand _WindowBottom;
+        public ICommand WindowBottom
+        {
+            get
+            {
+                if(_WindowBottom == null)
+                {
+                    _WindowBottom = new RelayCommand(
+                        o =>
+                        {
+                            var desktopWorkingArea = SystemParameters.WorkArea;
+                            windowPosition = WindowPosition.down;
+                            setWindowPosition();
+                        });
+                }
+                return _WindowBottom;
+            }
+        }
+
+        private ICommand _WindowTop;
+        public ICommand WindowTop
+        {
+            get
+            {
+                if (_WindowTop == null)
+                {
+                    _WindowTop = new RelayCommand(
+                        o =>
+                        {
+                            var desktopWorkingArea = SystemParameters.WorkArea;
+                            windowPosition = WindowPosition.up;
+                            setWindowPosition();
+                        });
+                }
+                return _WindowTop;
+            }
+        }
+
+        private ICommand _SaveWindowPosition;
+        public ICommand SaveWindowPosition
+        {
+            get
+            {
+                if(_SaveWindowPosition == null)
+                {
+                    _SaveWindowPosition = new RelayCommand(
+                        o =>
+                        {
+                            saveWindowPosition();
+                        });
+                }
+                return _SaveWindowPosition;
+            }
+        }
+        #endregion
 
         private void RaisePropertyChanged(string propertyName)
         {

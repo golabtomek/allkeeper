@@ -1,5 +1,7 @@
 ﻿using Microsoft.Practices.Prism.Commands;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -7,58 +9,96 @@ namespace allkeeper.ViewModel
 {
     public partial class MainViewModel
     {
-
         #region ClipboardVM
-        private void ClipboardConstructor()
+        public void ClipboardConstructor()
         {
-            SearchBarForeground = Brushes.LightGray;
-            searchBarText = "Search";
+            clipboardSearchBarForeground = Brushes.LightGray;
+            clipboardSearchBarText = "Search";
             this.ClipboardUpdateCommand = new DelegateCommand(OnClipboardUpdate, OnCanClipboardUpdate);
+            clipboardGridWidth = fullWidth / 2;
+            clipboardCollapseButtonText = "Hide Clipboard History";
         }
 
         private Model.ClipboardModel clipboardModel = new Model.ClipboardModel();
-        private ObservableCollection<string> ClipboardHistory { get; set; } = new ObservableCollection<string>();
-        private ObservableCollection<string> SearchResult { get; set; } = new ObservableCollection<string>();
 
-        public ObservableCollection<string> ClipList
+        private ObservableCollection<string> _clipboard;
+        public ObservableCollection<string> clipboard
         {
             get
             {
-                if (SearchResult.Count == 0 && (SearchBarText == "" || SearchBarText == "Search")) return ClipboardHistory;
-                else return SearchResult;
+                return _clipboard;
+            }
+            set
+            {
+                if (_clipboard == value) return;
+                _clipboard = value;
+                RaisePropertyChanged("clipboard");
             }
         }
 
         public void ClipboardModelSync()
         {
-            ClipboardHistory = new ObservableCollection<string>(clipboardModel.HistoryList);
-            SearchResult = new ObservableCollection<string>(clipboardModel.SearchResult);
-            RaisePropertyChanged("ClipList");
+            clipboard = new ObservableCollection<string>(clipboardModel.get());
         }
         
-        private string selectedItem;
-        public string SelectedItem
+
+        private void copyToClipboard(string text)
         {
-            get { return selectedItem; }
+            clipboardModel.CopyToClipboard(text);
+        }
+        #region ClipboardProperties
+        private double _clipboardGridWidth;
+        public double clipboardGridWidth
+        {
+            get { return _clipboardGridWidth; }
             set
             {
-                if (selectedItem == value)
-                    return;
-                selectedItem = value;
-                if (selectedItem != null)
-                    CopyToClipboard();
+                if (value == _clipboardGridWidth) return;
+                _clipboardGridWidth = value;
+                RaisePropertyChanged("clipboardGridWidth");
             }
         }
 
-        private void CopyToClipboard()
+        private string _clipboardCollapseButtonText;
+        public string clipboardCollapseButtonText
         {
-            clipboardModel.CopyToClipboard(SelectedItem);
+            get { return _clipboardCollapseButtonText; }
+            set
+            {
+                if (value == _clipboardCollapseButtonText) return;
+                _clipboardCollapseButtonText = value;
+                RaisePropertyChanged("clipboardCollapseButtonText");
+            }
         }
 
+        private Visibility _clipboardTitleVisibility;
+        public Visibility clipboardTitleVisibility
+        {
+            get { return _clipboardTitleVisibility; }
+            set
+            {
+                if (value == _clipboardTitleVisibility) return;
+                _clipboardTitleVisibility = value;
+                RaisePropertyChanged("clipboardTitleVisibility");
+            }
+        }
+
+        private Visibility _clipboardClearButtonVisibility;
+        public Visibility clipboardClearButtonVisibility
+        {
+            get { return _clipboardClearButtonVisibility; }
+            set
+            {
+                if (value == _clipboardClearButtonVisibility) return;
+                _clipboardClearButtonVisibility = value;
+                RaisePropertyChanged("clipboardClearButtonVisibility");
+            }
+        }
+        
+        #endregion
         #region clipboardupdate
         public DelegateCommand ClipboardUpdateCommand { get; private set; }
         
-
         public void OnClipboardUpdate()
         {
             clipboardModel.addItem();
@@ -71,115 +111,159 @@ namespace allkeeper.ViewModel
             return true;
         }
 
-        private string searchBarText;
-        public string SearchBarText
+        #endregion
+#region SearchBarProperties
+        private string _clipboardSearchBarText;
+        public string clipboardSearchBarText
         {
-            get { return searchBarText; }
+            get { return _clipboardSearchBarText; }
             set
             {
-                if (searchBarText == value)
+                if (_clipboardSearchBarText == value)
                     return;
-                searchBarText = value;
-                RaisePropertyChanged("searchBarText");
-                if (SearchBarText != "" || SearchBarText != "Search")
-                    Search();
-                else
-                    SearchResult = new ObservableCollection<string>();
+                _clipboardSearchBarText = value;
+                RaisePropertyChanged("clipboardSearchBarText");
+                search();
             }
         }
 
-        private Brush _SearchBarForeground;
-        public Brush SearchBarForeground
+        private Brush _clipboardSearchBarForeground;
+        public Brush clipboardSearchBarForeground
         {
-            get { return _SearchBarForeground; }
+            get { return _clipboardSearchBarForeground; }
             set
             {
-                if (_SearchBarForeground == value) return;
-                _SearchBarForeground = value;
-                RaisePropertyChanged("SearchBarForeground");
+                if (_clipboardSearchBarForeground == value) return;
+                _clipboardSearchBarForeground = value;
+                RaisePropertyChanged("clipboardSearchBarForeground");
             }
         }
 
-        public void Search()
+        public void search()
         {
-            clipboardModel.Search(SearchBarText);
-            ClipboardModelSync();
+                clipboardModel.Search(clipboardSearchBarText);
+                ClipboardModelSync();
         }
 
         #endregion
 
         #region Commands
 
-        private ICommand _SearchBarLeftButtonDown;
-        public ICommand SearchBarLeftButtonDown
+        private ICommand _ClipboardSearchBarLeftButtonDown;
+        public ICommand ClipboardSearchBarLeftButtonDown
         {
             get
             {
-                if (_SearchBarLeftButtonDown == null)
-                    _SearchBarLeftButtonDown = new RelayCommand(
+                if (_ClipboardSearchBarLeftButtonDown == null)
+                    _ClipboardSearchBarLeftButtonDown = new RelayCommand(
                         o =>
                         {
-                            if(SearchBarText=="Search")
-                            SearchBarText = "";
-                            SearchBarForeground = Brushes.White;
+                            if(clipboardSearchBarText=="Search")
+                                clipboardSearchBarText = "";
+                            clipboardSearchBarForeground = Brushes.White;
                         });
-                return _SearchBarLeftButtonDown;
+                return _ClipboardSearchBarLeftButtonDown;
             }
         }
 
-        private ICommand _SearchBarLostFocus;
-        public ICommand SearchBarLostFocus
+        private ICommand _ClipboardSearchBarLostFocus;
+        public ICommand ClipboardSearchBarLostFocus
         {
             get
             {
-                if (_SearchBarLostFocus == null)
-                    _SearchBarLostFocus = new RelayCommand(
+                if (_ClipboardSearchBarLostFocus == null)
+                    _ClipboardSearchBarLostFocus = new RelayCommand(
                         o =>
                         {
-                            if (SearchBarText == "")
+                            if (clipboardSearchBarText == "")
                             {
-                                SearchBarText = "Search";
-                                SearchBarForeground = Brushes.LightGray;
+                                clipboardSearchBarText = "Search";
+                                clipboardSearchBarForeground = Brushes.LightGray;
                             }
                         });
-                return _SearchBarLostFocus;
+                return _ClipboardSearchBarLostFocus;
                 
             }
         }
 
-        private ICommand _ClearHistory;
-        public ICommand ClearHistory
+        private ICommand _ClipboardClear;
+        public ICommand ClipboardClear
         {
             get
             {
-                if (_ClearHistory == null)
-                    _ClearHistory = new RelayCommand(
+                if (_ClipboardClear == null)
+                    _ClipboardClear = new RelayCommand(
                         o =>
                         {
-                            clipboardModel.ClearHistory();
-                            SearchResult = new ObservableCollection<string>();
+                            clipboardModel.Clear();
                             ClipboardModelSync();
                         });
-                return _ClearHistory;
+                return _ClipboardClear;
             }
         }
 
-        private ICommand _DeleteHistoryItem;
-        public ICommand DeleteHistoryItem
+        private ICommand _ClipboardDeleteItem;
+        public ICommand ClipboardDeleteItem
         {
             get
             {
-                if (_DeleteHistoryItem == null)
-                    _DeleteHistoryItem = new RelayCommand(
+                if (_ClipboardDeleteItem == null)
+                    _ClipboardDeleteItem = new RelayCommand(
                         o =>
                         {
                             string item = (string)o;
                             clipboardModel.removeItem(item);
-                            if (SearchResult.Contains(item))
-                                SearchResult.Remove(item);
                             ClipboardModelSync();
                         });
-                return _DeleteHistoryItem;
+                return _ClipboardDeleteItem;
+            }
+        }
+
+        private ICommand _ClipboardGridCollapse;
+        public ICommand ClipboardGridCollapseExtend
+        {
+            get
+            {
+                if (_ClipboardGridCollapse == null)
+                    _ClipboardGridCollapse = new RelayCommand(
+                        o =>
+                        {
+                            if (clipboardClearButtonVisibility == Visibility.Visible)
+                            {
+                                width = width - clipboardGridWidth + 25;
+                                clipboardGridWidth = 25;
+                                clipboardCollapseButtonText = "Extend Clipboard History";
+                                clipboardClearButtonVisibility = Visibility.Collapsed;
+                                clipboardTitleVisibility = Visibility.Collapsed;
+                            }
+                            else
+                            {
+                                clipboardGridWidth = fullWidth / 2;
+                                width = width + clipboardGridWidth - 25;
+                                clipboardCollapseButtonText = "Hide Clipboard History";
+                                clipboardClearButtonVisibility = Visibility.Visible;
+                                clipboardTitleVisibility = Visibility.Visible;
+                            }
+                        });
+                return _ClipboardGridCollapse;
+            }
+        }
+
+        private ICommand _ClipboardCopyItem;
+        public ICommand ClipboardCopyItem
+        {
+            get
+            {
+                if(_ClipboardCopyItem == null)
+                {
+                    _ClipboardCopyItem = new RelayCommand(
+                        o =>
+                        {
+                            string item = o as string;
+                            copyToClipboard(item);
+                        });
+                }
+                return _ClipboardCopyItem;
             }
         }
 

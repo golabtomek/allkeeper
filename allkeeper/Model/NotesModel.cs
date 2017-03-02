@@ -8,40 +8,40 @@ namespace allkeeper.Model
 {
     public class Note
     {
-        public string Title { get; set; }
-        public string Content { get; set; }
+        public string title { get; set; }
+        public string content { get; set; }
 
         public Note(string title, string content)
         {
-            Title = title;
-            Content = content;
+            this.title = title;
+            this.content = content;
         }
     }
 
     public class NotesModel
     {
-        public List<Note> NotesList = new List<Note>();
+        public List<Note> Notes = new List<Note>();
         
 
         public void addItem(string Title, string Content)
         {
-            NotesList.Add(new Note(Title, Content));
+            Notes.Add(new Note(Title, Content));
         }
 
         public void removeItem(string Title, string Content)
         {
             Note note = new Note(Title, Content);
-            if (NotesList.Contains(note))
-                NotesList.Remove(note);
+            if (Notes.Contains(note))
+                Notes.Remove(note);
         }
 
         public void removeItem(Note note)
         {
-            foreach (Note item in NotesList)
+            foreach (Note item in Notes)
             {
                 if (item == note)
                 {
-                    NotesList.Remove(item);
+                    Notes.Remove(item);
                     break;
                 }
             }
@@ -53,12 +53,12 @@ namespace allkeeper.Model
             Note NewItem = new Note(NewTitle, NewContent);
             if (OldItem != NewItem)
             {
-                foreach(Note item in NotesList)
+                foreach(Note item in Notes)
                 {
-                    if (item.Content == OldItem.Content && item.Title == OldItem.Title)
+                    if (item.content == OldItem.content && item.title == OldItem.title)
                     {
-                        NotesList.Remove(item);
-                        NotesList.Add(NewItem);
+                        Notes.Remove(item);
+                        Notes.Add(NewItem);
                         break;
                     }
                 }
@@ -70,12 +70,12 @@ namespace allkeeper.Model
         {
             if (OldItem != NewItem)
             {
-                foreach (Note item in NotesList)
+                foreach (Note item in Notes)
                 {
                     if (item == NewItem)
                     {
-                        NotesList.Remove(item);
-                        NotesList.Add(NewItem);
+                        Notes.Remove(item);
+                        Notes.Add(NewItem);
                     }
                 }
             }
@@ -83,13 +83,13 @@ namespace allkeeper.Model
 
         public void saveData()
         {
-            XmlFile.saveNotes(NotesList);
+            XmlFile.saveNotes(Notes);
         }
 
         public void loadData()
         {
             List<Note> notes = XmlFile.loadNotes();
-            NotesList = notes;
+            Notes = notes;
         }
     }
 }

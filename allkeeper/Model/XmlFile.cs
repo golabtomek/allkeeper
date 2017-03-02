@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace allkeeper.Model
@@ -12,6 +13,8 @@ namespace allkeeper.Model
     public class XmlFile
     {
         private static string path = "Data.xml";
+        private static string settingsPath = "WindowSettings.txt";
+
         public static void saveNotes(List<Note> notes)
         {
             try
@@ -21,8 +24,8 @@ namespace allkeeper.Model
                     new XComment("Saving date: " + DateTime.Now.ToString(CultureInfo.InvariantCulture)),
                     new XElement("Notes", from Note note in notes
                                           select new XElement("Note",
-                                              new XElement("Title", note.Title),
-                                              new XElement("Content", note.Content)
+                                              new XElement("Title", note.title),
+                                              new XElement("Content", note.content)
                                               )));
                 xml.Save(path);
             }
@@ -50,6 +53,34 @@ namespace allkeeper.Model
                     return new List<Note>();
                 }
         }
+        
+        public static void saveWindowSettings(string position)
+        {
+            try
+            {
+                StreamWriter file = new StreamWriter(settingsPath);
+                file.WriteLine(position);
+                file.Close();
+            }
+            catch
+            {
+                throw new Exception("Error saving to txt");
+            }
+        }
 
+        public static string loadWindowSettings()
+        {
+            string position = "";
+            try
+            {
+                StreamReader file = new StreamReader(settingsPath);
+                position = file.ReadLine();
+                return position;
+            }
+            catch
+            {
+                return position;
+            }
+        }
     }
 }

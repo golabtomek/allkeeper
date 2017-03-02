@@ -15,252 +15,291 @@ namespace allkeeper.ViewModel
         #region NotesVM
         public void NotesConstructor()
         {
-            NoteTextBoxText = "New Note";
-            NoteTitleTextBox = "Note Title";
-            NoteTextBoxForeground = Brushes.LightGray;
-            ShowNotesListGrid();
+            noteContent = "New Note";
+            noteTitle = "Note Title";
+            noteContentForeground = Brushes.LightGray;
+            showNotesListGrid();
             notesModel.loadData();
-            NotesModelSync();
+            notesModelSync();
+            notesGridWidth = fullWidth / 2;
+            notesCollapseButtonText = "Hide Quick Notes";
         }
 
         private Model.NotesModel notesModel = new Model.NotesModel();
-        public ObservableCollection<Model.Note> NotesList { get; set; } = new ObservableCollection<Model.Note>();
+        public ObservableCollection<Model.Note> notes { get; set; } = new ObservableCollection<Model.Note>();
 
-        public void NotesModelSync()
+        public void notesModelSync()
         {
-            NotesList = new ObservableCollection<Model.Note>(notesModel.NotesList);
-            RaisePropertyChanged("NotesList");
+            notes = new ObservableCollection<Model.Note>(notesModel.Notes);
+            RaisePropertyChanged("notes");
         }
 
-        #region TextBoxes
-        private string _NoteTextBoxText;
-        public string NoteTextBoxText
+        #region NotesContent
+        private string _noteContent;
+        public string noteContent
         {
-            get { return _NoteTextBoxText; }
+            get { return _noteContent; }
             set
             {
-                if (value == _NoteTextBoxText) return;
-                _NoteTextBoxText = value;
-                RaisePropertyChanged("NoteTextBoxText");
+                if (value == _noteContent) return;
+                _noteContent = value;
+                RaisePropertyChanged("noteContent");
             }
         }
 
-        private string _NoteTitleTextBox;
-        public string NoteTitleTextBox
+        private string _noteTitle;
+        public string noteTitle
         {
-            get { return _NoteTitleTextBox; }
+            get { return _noteTitle; }
             set
             {
-                if (value == _NoteTitleTextBox) return;
-                _NoteTitleTextBox = value;
-                RaisePropertyChanged("NoteTitleTextBox");
+                if (value == _noteTitle) return;
+                _noteTitle = value;
+                RaisePropertyChanged("noteTitle");
             }
         }
 
-        private string _EditNoteTitleTextBox;
-        public string EditNoteTitleTextBox
+        private string _noteEditTitle;
+        public string noteEditTitle
         {
-            get { return _EditNoteTitleTextBox; }
+            get { return _noteEditTitle; }
             set
             {
-                if (value == _EditNoteTitleTextBox) return;
-                _EditNoteTitleTextBox = value;
-                RaisePropertyChanged("EditNoteTitleTextBox");
+                if (value == _noteEditTitle) return;
+                _noteEditTitle = value;
+                RaisePropertyChanged("noteEditTitle");
             }
         }
 
-        private string _BeforeEditNoteTitleTextBox;
-        public string BeforeEditNoteTitleTextBox
+        private string _noteEditContent;
+        public string noteEditContent
         {
-            get { return _BeforeEditNoteTitleTextBox; }
+            get { return _noteEditContent; }
             set
             {
-                if (value == _BeforeEditNoteTitleTextBox) return;
-                _BeforeEditNoteTitleTextBox = value;
+                if (value == _noteEditContent) return;
+                _noteEditContent = value;
+                RaisePropertyChanged("noteEditContent");
             }
         }
 
-        private string _EditNoteTextBoxText;
-        public string EditNoteTextBoxText
+        private string _noteTitleBeforeEdit;
+        public string noteTitleBeforeEdit
         {
-            get { return _EditNoteTextBoxText; }
+            get { return _noteTitleBeforeEdit; }
             set
             {
-                if (value == _EditNoteTextBoxText) return;
-                _EditNoteTextBoxText = value;
-                RaisePropertyChanged("EditNoteTextBoxText");
+                if (value == _noteTitleBeforeEdit) return;
+                _noteTitleBeforeEdit = value;
             }
         }
-
-        private string _BeforeEditNoteTextBoxText;
-        public string BeforeEditNoteTextBoxText
+        
+        private string _noteContentBeforeEdit;
+        public string noteContentBeforeEdit
         {
-            get { return _BeforeEditNoteTextBoxText; }
+            get { return _noteContentBeforeEdit; }
             set
             {
-                if (value == _BeforeEditNoteTextBoxText) return;
-                _BeforeEditNoteTextBoxText = value;
+                if (value == _noteContentBeforeEdit) return;
+                _noteContentBeforeEdit = value;
             }
         }
 #endregion
-        #region NotesVisualProperties
-        private void AddNoteFormLostFocus()
+
+        #region NotesVisual
+        private void addNoteFormLostFocus()
         {
-            if (NoteTextBoxText == "") NoteTextBoxText = "New Note";
-            NoteTextBoxForeground = Brushes.LightGray;
+            if (noteContent == "") noteContent = "New Note";
+            noteContentForeground = Brushes.LightGray;
         }
 
-        private void NoteTitleFormLostFocus()
+        private void noteTitleFormLostFocus()
         {
-            if (NoteTitleTextBox == "") NoteTitleTextBox = "Note Title";
+            if (noteTitle == "") noteTitle = "Note Title";
         }
 
-        private void EditNoteFormLostFocus()
+        private void editNoteFormLostFocus()
         {
-            if (EditNoteTextBoxText == "") EditNoteTextBoxText = "New Note";
-            NoteTextBoxForeground = Brushes.LightGray;
+            if (noteEditContent == "") noteEditContent = "New Note";
+            noteContentForeground = Brushes.LightGray;
         }
 
-        private void EditNoteTitleFormLostFocus()
+        private void editNoteTitleFormLostFocus()
         {
-            if (EditNoteTitleTextBox == "") EditNoteTitleTextBox = "Note Title";
+            if (noteEditTitle == "") noteEditTitle = "Note Title";
         }
 
-        private void ResetAddNoteForm()
+        private void activateAddNoteForm()
         {
-            NoteTextBoxText = "New Note";
-            NoteTextBoxForeground = Brushes.LightGray;
-            NoteTitleTextBox = "Note Title";
+            if (noteContent == "New Note")
+                noteContent = "";
+            noteContentForeground = Brushes.White;
         }
 
-        private void ShowNotesListGrid()
+        private void activateNoteTitleForm()
         {
-            NoteListGridVisibility = Visibility.Visible;
-            AddNoteGridVisibility = Visibility.Collapsed;
-            NoteEditGridVisibility = Visibility.Collapsed;
+            if (noteTitle == "Note Title")
+                noteTitle = "";
         }
 
-        private void ShowAddNoteGrid()
+        private void activateEditNoteForm()
         {
-            NoteListGridVisibility = Visibility.Collapsed;
-            AddNoteGridVisibility = Visibility.Visible;
+            if (noteEditContent == "New Note")
+                noteEditContent = "";
+            noteContentForeground = Brushes.White;
         }
 
-        private void ShowEditNoteGrid()
+        private void activateEditNoteTitleForm()
         {
-            NoteEditGridVisibility = Visibility.Visible;
-            NoteListGridVisibility = Visibility.Collapsed;
+            if (noteEditTitle == "Note Title")
+                noteEditTitle = "";
         }
 
-        private void ActivateAddNoteForm()
+        private void resetAddNoteForm()
         {
-            if (NoteTextBoxText == "New Note")
-                NoteTextBoxText = "";
-            NoteTextBoxForeground = Brushes.White;
+            noteContent = "New Note";
+            noteContentForeground = Brushes.LightGray;
+            noteTitle = "Note Title";
         }
 
-        private void ActivateNoteTitleForm()
+        private void showNotesListGrid()
         {
-            if (NoteTitleTextBox == "Note Title")
-                NoteTitleTextBox = "";
+            noteListGridVisibility = Visibility.Visible;
+            noteAddGridVisibility = Visibility.Collapsed;
+            noteEditGridVisibility = Visibility.Collapsed;
         }
 
-        private void ActivateEditNoteForm()
+        private void showAddNoteGrid()
         {
-            if (EditNoteTextBoxText == "New Note")
-                NoteTextBoxText = "";
-            NoteTextBoxForeground = Brushes.White;
+            noteListGridVisibility = Visibility.Collapsed;
+            noteAddGridVisibility = Visibility.Visible;
         }
 
-        private void ActivateEditNoteTitleForm()
+        private void showEditNoteGrid()
         {
-            if (BeforeEditNoteTitleTextBox == "Note Title")
-                NoteTitleTextBox = "";
+            noteEditGridVisibility = Visibility.Visible;
+            noteListGridVisibility = Visibility.Collapsed;
         }
 
-        private Brush _NoteTextBoxForeground;
-        public Brush NoteTextBoxForeground
+        private Brush _noteContentForeground;
+        public Brush noteContentForeground
         {
-            get { return _NoteTextBoxForeground; }
+            get { return _noteContentForeground; }
             set
             {
-                if (value == _NoteTextBoxForeground) return;
-                _NoteTextBoxForeground = value;
-                RaisePropertyChanged("NoteTextBoxForeground");
+                if (value == _noteContentForeground) return;
+                _noteContentForeground = value;
+                RaisePropertyChanged("noteContentForeground");
             }
         }
 
-        private Visibility _AddNoteGridVisibility;
-        public Visibility AddNoteGridVisibility
+        private Visibility _noteAddGridVisibility;
+        public Visibility noteAddGridVisibility
         {
-            get { return _AddNoteGridVisibility; }
+            get { return _noteAddGridVisibility; }
             set
             {
-                if (_AddNoteGridVisibility == value) return;
-                _AddNoteGridVisibility = value;
-                RaisePropertyChanged("AddNoteGridVisibility");
+                if (_noteAddGridVisibility == value) return;
+                _noteAddGridVisibility = value;
+                RaisePropertyChanged("noteAddGridVisibility");
             }
         }
 
-        private Visibility _NoteListGridVisibility;
-        public Visibility NoteListGridVisibility
+        private Visibility _noteListGridVisibility;
+        public Visibility noteListGridVisibility
         {
-            get { return _NoteListGridVisibility; }
+            get { return _noteListGridVisibility; }
             set
             {
-                if (_NoteListGridVisibility == value) return;
-                _NoteListGridVisibility = value;
-                RaisePropertyChanged("NoteListGridVisibility");
+                if (_noteListGridVisibility == value) return;
+                _noteListGridVisibility = value;
+                RaisePropertyChanged("noteListGridVisibility");
             }
         }
 
-        private Visibility _NoteEditGridVisibility;
-        public Visibility NoteEditGridVisibility
+        private Visibility _noteEditGridVisibility;
+        public Visibility noteEditGridVisibility
         {
-            get { return _NoteEditGridVisibility; }
+            get { return _noteEditGridVisibility; }
             set
             {
-                if (_NoteEditGridVisibility == value) return;
-                _NoteEditGridVisibility = value;
-                RaisePropertyChanged("NoteEditGridVisibility");
+                if (_noteEditGridVisibility == value) return;
+                _noteEditGridVisibility = value;
+                RaisePropertyChanged("noteEditGridVisibility");
+            }
+        }
+
+        private Visibility _notesContentVisibility;
+        public Visibility notesContentVisibility
+        {
+            get { return _notesContentVisibility; }
+            set
+            {
+                if (value == _notesContentVisibility) return;
+                _notesContentVisibility = value;
+                RaisePropertyChanged("notesContentVisibility");
+            }
+        }
+
+        private string _notesCollapseButtonText;
+        public string notesCollapseButtonText
+        {
+            get { return _notesCollapseButtonText; }
+            set
+            {
+                if (value == _notesCollapseButtonText) return;
+                _notesCollapseButtonText = value;
+                RaisePropertyChanged("notesCollapseButtonText");
+            }
+        }
+
+        private double _notesGridWidth;
+        public double notesGridWidth
+        {
+            get { return _notesGridWidth; }
+            set
+            {
+                if (value == _notesGridWidth) return;
+                _notesGridWidth = value;
+                RaisePropertyChanged("notesGridWidth");
             }
         }
         #endregion
 
         #region commands
-        private ICommand _AddTextTextBoxLeftButtonDown;
-        public ICommand AddTextTextBoxLeftButtonDown
+        private ICommand _NoteContentLeftButtonDown;
+        public ICommand NoteContentLeftButtonDown
         {
             get
             {
-                if(_AddTextTextBoxLeftButtonDown == null)
+                if(_NoteContentLeftButtonDown == null)
                 {
-                    _AddTextTextBoxLeftButtonDown= new RelayCommand(
+                    _NoteContentLeftButtonDown = new RelayCommand(
                         o =>
                         {
-                            ActivateAddNoteForm();
-                            ActivateEditNoteForm();
+                            activateAddNoteForm();
+                            activateEditNoteForm();
                         });
                 }
-                return _AddTextTextBoxLeftButtonDown;
+                return _NoteContentLeftButtonDown;
             }
         }
 
-        private ICommand _AddTextTextBoxLostFocus;
-        public ICommand AddTextTextBoxLostFocus
+        private ICommand _NoteContentLostFocus;
+        public ICommand NoteContentLostFocus
         {
             get
             {
-                if(_AddTextTextBoxLostFocus==null)
+                if(_NoteContentLostFocus == null)
                 {
-                    _AddTextTextBoxLostFocus = new RelayCommand(
+                    _NoteContentLostFocus = new RelayCommand(
                         o =>
                         {
-                            AddNoteFormLostFocus();
-                            EditNoteFormLostFocus();
+                            addNoteFormLostFocus();
+                            editNoteFormLostFocus();
                         });
                 }
-                return _AddTextTextBoxLostFocus;
+                return _NoteContentLostFocus;
             }
         }
 
@@ -274,8 +313,8 @@ namespace allkeeper.ViewModel
                     _NoteTitleLeftButtonDown = new RelayCommand(
                         o =>
                         {
-                            ActivateNoteTitleForm();
-                            ActivateEditNoteTitleForm();
+                            activateNoteTitleForm();
+                            activateEditNoteTitleForm();
                         });
                 }
                 return _NoteTitleLeftButtonDown;
@@ -292,148 +331,175 @@ namespace allkeeper.ViewModel
                     _NoteTitleLostFocus = new RelayCommand(
                         o =>
                         {
-                            NoteTitleFormLostFocus();
-                            EditNoteTitleFormLostFocus();
+                            noteTitleFormLostFocus();
+                            editNoteTitleFormLostFocus();
                         });
                 }
                 return _NoteTitleLostFocus;
             }
         }
 
-        private ICommand _SaveNewNote;
-        public ICommand SaveNewNote
+        private ICommand _NoteSaveNewNote;
+        public ICommand NoteSaveNewNote
         {
             get
             {
-                if(_SaveNewNote == null)
+                if(_NoteSaveNewNote == null)
                 {
-                    _SaveNewNote = new RelayCommand(
+                    _NoteSaveNewNote = new RelayCommand(
                         o =>
                         {
-                            if (NoteTextBoxText != "" && NoteTextBoxText != "New Note")
+                            if (noteContent != "")
                             {
-                                notesModel.addItem(NoteTitleTextBox, NoteTextBoxText);
-                                NotesModelSync();
-                                ResetAddNoteForm();
-                                ShowNotesListGrid();
+                                notesModel.addItem(noteTitle, noteContent);
+                                notesModelSync();
+                                resetAddNoteForm();
+                                showNotesListGrid();
                             }
                         });
                 }
-                return _SaveNewNote;
+                return _NoteSaveNewNote;
             }
         }
 
-        private ICommand _AddNote;
-        public ICommand AddNote
+        private ICommand _NoteAddShowGrid;
+        public ICommand NoteAddShowGrid
         {
             get
             {
-                if(_AddNote == null)
+                if(_NoteAddShowGrid == null)
                 {
-                    _AddNote = new RelayCommand(
+                    _NoteAddShowGrid = new RelayCommand(
                         o =>
                         {
-                            ShowAddNoteGrid();
-                            ResetAddNoteForm();
+                            showAddNoteGrid();
+                            resetAddNoteForm();
                         });
                 }
-                return _AddNote;
+                return _NoteAddShowGrid;
             }
         }
 
-        private ICommand _DeleteNote;
-        public ICommand DeleteNote
+        private ICommand _NoteDelete;
+        public ICommand NoteDelete
         {
             get
             {
-                if(_DeleteNote == null)
+                if(_NoteDelete == null)
                 {
-                    _DeleteNote = new RelayCommand(
-                        o =>
-                        {
-                            Model.Note note = o as Model.Note;
-                            if (NotesList.Contains(note))
-                                notesModel.removeItem(note);
-                            NotesModelSync();
-                        });
-                }
-                return _DeleteNote;
-            }
-        }
-
-        private ICommand _CancelAddNote;
-        public ICommand CancelAddNote
-        {
-            get
-            {
-                if(_CancelAddNote == null)
-                {
-                    _CancelAddNote = new RelayCommand(
-                        o =>
-                        {
-                            ShowNotesListGrid();
-                            ResetAddNoteForm();
-                        });
-                }
-                return _CancelAddNote;
-            }
-        }
-
-        private ICommand _EditNote;
-        public ICommand EditNote
-        {
-            get
-            {
-                if(_EditNote==null)
-                {
-                    _EditNote = new RelayCommand(
+                    _NoteDelete = new RelayCommand(
                         o =>
                         {
                             Model.Note note = o as Model.Note;
-                            ShowEditNoteGrid();
-                            EditNoteTextBoxText = note.Content;
-                            EditNoteTitleTextBox = note.Title;
-                            BeforeEditNoteTextBoxText = note.Content;
-                            BeforeEditNoteTitleTextBox = note.Title;
+                            notesModel.removeItem(note);
+                            notesModelSync();
                         });
                 }
-                return _EditNote;
+                return _NoteDelete;
             }
         }
 
-        private ICommand _SaveEditNote;
-        public ICommand SaveEditNote
+        private ICommand _NoteCancel;
+        public ICommand NoteCancel
         {
             get
             {
-                if(_SaveEditNote == null)
+                if(_NoteCancel == null)
                 {
-                    _SaveEditNote = new RelayCommand(
+                    _NoteCancel = new RelayCommand(
                         o =>
                         {
-                            notesModel.editItem(BeforeEditNoteTitleTextBox, BeforeEditNoteTextBoxText, EditNoteTitleTextBox, EditNoteTextBoxText);
-                            NotesModelSync();
-                            ShowNotesListGrid();
+                            showNotesListGrid();
+                            resetAddNoteForm();
                         });
                 }
-                return _SaveEditNote;
+                return _NoteCancel;
             }
         }
 
-        private ICommand _SaveData;
-        public ICommand SaveData
+        private ICommand _NoteEditShowGrid;
+        public ICommand NoteEditShowGrid
         {
             get
             {
-                if(_SaveData==null)
+                if(_NoteEditShowGrid == null)
                 {
-                    _SaveData = new RelayCommand(
+                    _NoteEditShowGrid = new RelayCommand(
+                        o =>
+                        {
+                            Model.Note note = o as Model.Note;
+                            showEditNoteGrid();
+                            noteEditContent = note.content;
+                            noteEditTitle = note.title;
+                            noteContentBeforeEdit = note.content;
+                            noteTitleBeforeEdit = note.title;
+                        });
+                }
+                return _NoteEditShowGrid;
+            }
+        }
+
+        private ICommand _NoteEditSave;
+        public ICommand NoteEditSave
+        {
+            get
+            {
+                if(_NoteEditSave == null)
+                {
+                    _NoteEditSave = new RelayCommand(
+                        o =>
+                        {
+                            notesModel.editItem(noteTitleBeforeEdit, noteContentBeforeEdit, noteEditTitle, noteEditContent);
+                            notesModelSync();
+                            showNotesListGrid();
+                        });
+                }
+                return _NoteEditSave;
+            }
+        }
+
+        private ICommand _NotesSaveData;
+        public ICommand NotesSaveData
+        {
+            get
+            {
+                if(_NotesSaveData == null)
+                {
+                    _NotesSaveData = new RelayCommand(
                         o =>
                         {
                             notesModel.saveData();
                         });
                 }
-                return _SaveData;
+                return _NotesSaveData;
+            }
+        }
+
+        private ICommand _NotesGridCollapse;
+        public ICommand NotesGridCollapseExtend
+        {
+            get
+            {
+                if (_NotesGridCollapse == null)
+                    _NotesGridCollapse = new RelayCommand(
+                        o =>
+                        {
+                            if (notesContentVisibility == Visibility.Visible)
+                            {
+                                width = width - notesGridWidth + 25;
+                                notesGridWidth = 25;
+                                notesCollapseButtonText = "Extend Quick Notes";
+                                notesContentVisibility = Visibility.Collapsed;
+                            }
+                            else
+                            {
+                                notesGridWidth = fullWidth / 2;
+                                width = width + notesGridWidth - 25;
+                                notesCollapseButtonText = "Hide Quick Notes";
+                                notesContentVisibility = Visibility.Visible;
+                            }
+                        });
+                return _NotesGridCollapse;
             }
         }
         #endregion
