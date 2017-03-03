@@ -141,7 +141,7 @@ namespace allkeeper.ViewModel
 
         public void search()
         {
-                clipboardModel.Search(clipboardSearchBarText);
+                clipboardModel.search(clipboardSearchBarText);
                 ClipboardModelSync();
         }
 
@@ -195,7 +195,7 @@ namespace allkeeper.ViewModel
                     _ClipboardClear = new RelayCommand(
                         o =>
                         {
-                            clipboardModel.Clear();
+                            clipboardModel.clear();
                             ClipboardModelSync();
                         });
                 return _ClipboardClear;

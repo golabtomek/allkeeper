@@ -18,7 +18,7 @@ namespace allkeeper.Model
         public void addItem()
         {
             string text = Clipboard.GetText();
-            if (text != null && text != "" && text != " " && CheckHistory(text) != true)
+            if (text != null && text != "" && text != " " && checkHistory(text) != true)
                 HistoryList.Add(text);
         }
 
@@ -29,7 +29,7 @@ namespace allkeeper.Model
                 SearchResult.Remove(text);
         }
 
-        public bool CheckHistory(string text)
+        public bool checkHistory(string text)
         {
             bool isTextAlreadyInHistory = false;
             foreach (string t in HistoryList)
@@ -44,14 +44,14 @@ namespace allkeeper.Model
             Clipboard.SetText(text);
         }
 
-        public void Clear()
+        public void clear()
         {
             HistoryList = new List<string>();
             SearchResult = new List<string>();
         }
 
 
-        public void Search(string text)
+        public void search(string text)
         {
             SearchResult = new List<string>();
             searchText = text;
