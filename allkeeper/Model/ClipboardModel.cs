@@ -1,69 +1,51 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 
-namespace allkeeper.Model
+namespace Allkeeper.Model
 {
     public class ClipboardModel
     {
-        private List<string> HistoryList = new List<string>();
-        private List<string> SearchResult = new List<string>();
-        private string searchText = "";
-
-        public List<string> get()
-        {
-            if (searchText == "" || searchText == "Search") return HistoryList;
-            else return SearchResult;
-        }
+        public List<string> history = new List<string>();
 
         public void addItem()
         {
-            string text = Clipboard.GetText();
-            if (text != null && text != "" && text != " " && checkHistory(text) != true)
-                HistoryList.Add(text);
-        }
-
-        public void removeItem(string text)
-        {
-            HistoryList.Remove(text);
-            if (SearchResult.Contains(text))
-                SearchResult.Remove(text);
-        }
-
-        public bool checkHistory(string text)
-        {
-            bool isTextAlreadyInHistory = false;
-            foreach (string t in HistoryList)
-            {
-                if (text == t) isTextAlreadyInHistory = true;
-            }
-            return isTextAlreadyInHistory;
+            string clipboardItem = Clipboard.GetText();
+            if (clipboardItem != "" && !history.Contains(clipboardItem) && clipboardItem != null)
+                history.Add(clipboardItem);
         }
         
-        public void CopyToClipboard(string text)
+        public void removeItem(string clipboardItem)
         {
-            Clipboard.SetText(text);
+            if (history.Contains(clipboardItem))
+                history.Remove(clipboardItem);
         }
 
-        public void clear()
+        public void copyHistoryItemToUserClipboard(string clipboardItem)
         {
-            HistoryList = new List<string>();
-            SearchResult = new List<string>();
+            Clipboard.SetText(clipboardItem);
         }
 
-
-        public void search(string text)
+        public void clearHistory()
         {
-            SearchResult = new List<string>();
-            searchText = text;
-            if (text != "" || text != "Search")
+            history = new List<string>();
+        }
+
+        public List<string> searchInHistory(string searchQuery)
+        {
+            List<string> searchResult = new List<string>();
+            foreach(string clipboardItem in history)
             {
-                foreach (string item in HistoryList)
+                string clipboardItemDowncase = clipboardItem.ToLower();
+                if ( clipboardItemDowncase.Contains(searchQuery.ToLower()) )
                 {
-                    string item_downcase = item.ToLower();
-                    if (item_downcase.Contains(text.ToLower()))
-                        SearchResult.Add(item);
+                    searchResult.Add(clipboardItem);
                 }
             }
+            return searchResult;
         }
     }
 }

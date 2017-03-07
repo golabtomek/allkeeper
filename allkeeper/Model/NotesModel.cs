@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace allkeeper.Model
+namespace Allkeeper.Model
 {
     public class Note
     {
@@ -18,78 +18,81 @@ namespace allkeeper.Model
         }
     }
 
-    public class NotesModel
+    public class Notes
     {
-        public List<Note> Notes = new List<Note>();
-        
+        public List<Note> notes = new List<Note>();
 
-        public void addItem(string Title, string Content)
+        public void addItem(string title, string content)
         {
-            Notes.Add(new Note(Title, Content));
+            Note note = new Note(title, content);
+            notes.Add(note);
         }
 
-        public void removeItem(string Title, string Content)
+        public void addItem(Note note)
         {
-            Note note = new Note(Title, Content);
-            if (Notes.Contains(note))
-                Notes.Remove(note);
+            notes.Add(note);
         }
 
-        public void removeItem(Note note)
+        public void removeItem(string title, string content)
         {
-            foreach (Note item in Notes)
+            foreach(Note note in notes)
             {
-                if (item == note)
+                if(note.content == content && note.title == title)
                 {
-                    Notes.Remove(item);
+                    notes.Remove(note);
                     break;
                 }
             }
         }
-        
-        public void editItem(string OldTitle, string OldContent, string NewTitle, string NewContent)
+
+        public void removeItem(Note note)
         {
-            Note OldItem = new Note(OldTitle, OldContent);
-            Note NewItem = new Note(NewTitle, NewContent);
-            if (OldItem != NewItem)
+            if (notes.Contains(note))
+                notes.Remove(note);
+        }
+
+        public void editItem(string oldTitle, string oldContent, string newTitle, string newContent)
+        {
+            Note oldNote = new Note(oldTitle, oldContent);
+            Note newNote = new Note(newTitle, newContent);
+            if(oldNote != newNote)
             {
-                foreach(Note item in Notes)
+                foreach(Note note in notes)
                 {
-                    if (item.content == OldItem.content && item.title == OldItem.title)
+                    if(note.content == oldNote.content && note.title == oldNote.title)
                     {
-                        Notes.Remove(item);
-                        Notes.Add(NewItem);
+                        notes.Remove(note);
                         break;
                     }
                 }
+                notes.Add(newNote);
             }
-            
         }
 
-        public void editItem(Note OldItem, Note NewItem)
+        public void editItem(Note oldNote, Note newNote)
         {
-            if (OldItem != NewItem)
+            if (oldNote != newNote)
             {
-                foreach (Note item in Notes)
+                foreach (Note note in notes)
                 {
-                    if (item == NewItem)
+                    if (note.content == oldNote.content && note.title == oldNote.title)
                     {
-                        Notes.Remove(item);
-                        Notes.Add(NewItem);
+                        notes.Remove(note);
+                        break;
                     }
                 }
+                notes.Add(newNote);
             }
         }
 
         public void saveData()
         {
-            XmlFile.saveNotes(Notes);
+            XmlFiles.saveNotes(notes);
         }
 
         public void loadData()
         {
-            List<Note> notes = XmlFile.loadNotes();
-            Notes = notes;
+            notes = XmlFiles.loadNotes();
         }
     }
 }

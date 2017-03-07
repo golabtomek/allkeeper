@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace allkeeper.ViewModel
+namespace Allkeeper.ViewModel
 {
     [ValueConversion(typeof(bool), typeof(ScrollBarVisibility))]
     sealed class MouseOverToScrollBarVisibility : IValueConverter

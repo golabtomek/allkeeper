@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace allkeeper.Properties
+namespace Allkeeper.Properties
 {
 
 
